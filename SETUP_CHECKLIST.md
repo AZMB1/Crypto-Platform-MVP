@@ -15,13 +15,15 @@
 
 ## 🚂 Railway Project Setup
 
-- [ ] Create new Railway project: `crypto-platform-mvp`
-- [ ] Add PostgreSQL service
-- [ ] Add Redis service
-- [ ] Create persistent volume: `/data` (for training data)
-- [ ] Create persistent volume: `/models` (for trained models)
-- [ ] Copy `DATABASE_URL` from PostgreSQL service
-- [ ] Copy `REDIS_URL` from Redis service
+- [x] Create new Railway project: `crypto-platform-mvp`
+- [x] Add PostgreSQL service
+- [x] Add Redis service
+- [x] Copy `DATABASE_URL` from PostgreSQL service
+- [x] Copy `REDIS_URL` from Redis service
+- [ ] Create empty service: `ml-worker`
+- [ ] Add persistent volume to `ml-worker`: `/app` (5-10 GB)
+  - Will contain `/app/data/` (training data ~4 GB)
+  - Will contain `/app/models/` (ML models ~500 MB)
 
 ---
 
