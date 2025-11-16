@@ -763,9 +763,10 @@ GET    /api/health                  # Health check
 **Remember:** This is your central task tracker. Update the registry as you complete each step. Communication through this registry ensures smooth handoffs between steps!
 
 **Need help?** Review:
-- REFERENCE_INDEX.md - Master index (START HERE)
-- AGENT.md - Project context
+- 1_REFERENCE_INDEX.md - Master index (START HERE)
+- 1_AGENT.md - Project context
 - docs/SETUP.md - Complete setup guide
-- SETUP_CHECKLIST.md - Manual setup steps
-- Architecture.md - System design (includes database schemas, error handling)
-- Design_Philosophy.md - UI guidelines
+- 1_SETUP_CHECKLIST.md - Manual setup steps (all complete ✅)
+- 1_Architecture.md - System design (includes database schemas, error handling)
+- 1_Design_Philosophy.md - UI guidelines
+- CREDENTIALS.md - All API keys and secrets (gitignored)

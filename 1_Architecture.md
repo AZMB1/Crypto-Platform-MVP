@@ -1340,7 +1340,8 @@ const symbol = await db
 
 ---
 
-**See:** [REFERENCE_INDEX.md](./REFERENCE_INDEX.md) for master index  
+**See:** [1_REFERENCE_INDEX.md](./1_REFERENCE_INDEX.md) for master index  
 **See:** [docs/SETUP.md](./docs/SETUP.md) for environment setup  
-**See:** [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md) for manual setup steps  
-**See:** [PROGRESS.md](./PROGRESS.md) for Phase I tasks
+**See:** [1_SETUP_CHECKLIST.md](./1_SETUP_CHECKLIST.md) for manual setup steps  
+**See:** [1_PROGRESS.md](./1_PROGRESS.md) for Phase I tasks  
+**See:** [CREDENTIALS.md](./CREDENTIALS.md) for all API keys and secrets

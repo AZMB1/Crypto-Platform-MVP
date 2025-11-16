@@ -17,12 +17,13 @@ dist/
 .vercel
 .railway
 
-# Environment variables
+# Environment variables & Credentials
 .env
 .env*.local
 .env.development
 .env.production
 .env.staging
+CREDENTIALS.md
 
 # Debug
 npm-debug.log*
