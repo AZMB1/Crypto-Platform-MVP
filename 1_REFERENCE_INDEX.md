@@ -857,31 +857,28 @@
 ## 📍 COMMON TASK → DOCUMENT MAPPING
 
 **Task: Build Database Schema**
-→ Read: Architecture.md (Database Schema section), PROGRESS.md (Step 1, Registry)
+→ Read: 1_Architecture.md (Database Schema section), 1_PHASES.md (Step 1, Registry)
 
 **Task: Implement Prediction API**
-→ Read: Architecture.md (Data Workflows, ML Details), PROGRESS.md (Step 4), PRE_BUILD_CHECKLIST.md (ML Strategy)
+→ Read: 1_Architecture.md (Data Workflows, ML Details), 1_PHASES.md (Step 4)
 
 **Task: Build UI Component**
-→ Read: Design_Philosophy.md (entire doc), PROGRESS.md (Step 5, Conventions), Architecture.md (Frontend)
+→ Read: 1_Design_Philosophy.md (entire doc), 1_PHASES.md (Step 5, Conventions), 1_Architecture.md (Frontend)
 
 **Task: Integrate Polygon.io**
-→ Read: docs/Polygon_Integration.md, Architecture.md (External Services), PROGRESS.md (Step 2)
-
-**Task: Set Up Environment**
-→ Read: docs/SETUP.md, SETUP_CHECKLIST.md, Architecture.md (Component Breakdown)
+→ Read: docs/Polygon_Integration.md, 1_Architecture.md (External Services), 1_PHASES.md (Step 2), CREDENTIALS.md (API key)
 
 **Task: Train ML Models**
-→ Read: Architecture.md (ML Training Details, Data Workflows), PROGRESS.md (Step 4 + Step 6)
+→ Read: 1_Architecture.md (ML Training Details, Data Workflows), 1_PHASES.md (Step 4 + Step 6)
 
 **Task: Handle Errors**
-→ Read: Architecture.md (Error Handling section), Design_Philosophy.md (UI patterns)
+→ Read: 1_Architecture.md (Error Handling section), 1_Design_Philosophy.md (UI patterns)
 
 **Task: Fix Database-Related Issue**
-→ Read: Architecture.md (Database Schema, Critical Decisions), PROGRESS.md (Registry, Step 1)
+→ Read: 1_Architecture.md (Database Schema, Critical Decisions), 1_PHASES.md (Registry, Step 1)
 
 **Task: Update Architecture Decision**
-→ Update: Architecture.md (Critical Decisions + relevant section), PROGRESS.md (relevant step), AGENT.md (if affects data flow)
+→ Update: 1_Architecture.md (Critical Decisions + relevant section), 1_PHASES.md (relevant step), 1_AGENT.md (if affects data flow), 1_PROGRESS.md (log the change and why)
 
 ---
 
