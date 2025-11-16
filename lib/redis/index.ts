@@ -1,15 +1,15 @@
 import Redis from 'ioredis'
 
-// Validate REDIS_URL is present (skip during build time)
-if (!process.env.REDIS_URL && process.env.NODE_ENV !== 'production') {
-  console.warn('⚠️  REDIS_URL not set - caching features will be unavailable')
+// Validate REDIS_URL is present
+if (!process.env.REDIS_URL) {
+  throw new Error('REDIS_URL environment variable is not set')
 }
 
 /**
  * Redis Client Configuration
  * Singleton instance for connection pooling
  */
-const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL, {
+const redis = new Redis(process.env.REDIS_URL, {
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   enableOfflineQueue: true,
@@ -26,30 +26,28 @@ const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL, {
     }
     return false
   },
-}) : null as any
+})
 
 // Redis event handlers
-if (redis) {
-  redis.on('connect', () => {
-    console.log('✅ Redis: Connected')
-  })
+redis.on('connect', () => {
+  console.log('✅ Redis: Connected')
+})
 
-  redis.on('ready', () => {
-    console.log('✅ Redis: Ready to accept commands')
-  })
+redis.on('ready', () => {
+  console.log('✅ Redis: Ready to accept commands')
+})
 
-  redis.on('error', (err) => {
-    console.error('❌ Redis: Error -', err.message)
-  })
+redis.on('error', (err) => {
+  console.error('❌ Redis: Error -', err.message)
+})
 
-  redis.on('close', () => {
-    console.log('⚠️ Redis: Connection closed')
-  })
+redis.on('close', () => {
+  console.log('⚠️ Redis: Connection closed')
+})
 
-  redis.on('reconnecting', () => {
-    console.log('🔄 Redis: Reconnecting...')
-  })
-}
+redis.on('reconnecting', () => {
+  console.log('🔄 Redis: Reconnecting...')
+})
 
 /**
  * Export the Redis client
