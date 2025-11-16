@@ -629,42 +629,6 @@
 
 ---
 
-### PRE_BUILD_CHECKLIST.md (292 lines)
-**Purpose:** All locked-in technical decisions for Phase I
-
-**All Critical Decisions Locked In**
-1. **Project Init:** Next.js enterprise boilerplate, TypeScript, Tailwind
-2. **Chart Library:** TradingView lightweight-charts (Apache 2.0, free commercial)
-3. **UI Components:** Boilerplate's library or shadcn/ui
-4. **Indicators:** pandas-ta + ta-lib (all indicators, no duplicates, core 30 for MVP)
-5. **Database Strategy:** PostgreSQL (4 tables), Drizzle ORM (type-safe), File Storage (4GB), Redis (cache)
-6. **ML Training:**
-   - Steps 1-5: XGBoost (fast, CPU, explainable)
-   - Step 6: Hybrid Ensemble (40% LSTM + 40% XGBoost + 20% RF)
-   - Multi-step: Iterative → Direct multi-output
-   - Confidence: Time-decay → Ensemble variance
-   - Complete code examples included
-7. **Data & Training:** NO MOCK DATA, Railway only, real everything from day 1
-8. **Error Handling:** Specific messages for each error type
-9. **Development:** Railway production/staging only, NO LOCAL DEV
-10. **Architecture:** All key decisions (5 models, USD volume, fresh data, etc.)
-11. **Testing:** Manual for MVP, automated in Phase IV
-
-**Phase 1-6 Overview**
-- Step-by-step what to build
-- Database → Polygon → Charts → ML → UI → Ensemble
-
-**Pre-Build Setup Required**
-- Manual steps before coding
-- Railway, Vercel, Polygon.io setup checklist
-
-**Definition of Done**
-- Functional, technical, infrastructure requirements
-
-**When to read:** Before making ANY technical decision, reference for locked-in choices
-
----
-
 ### docs/SETUP.md (555 lines)
 **Purpose:** Complete setup guide for all environments
 
