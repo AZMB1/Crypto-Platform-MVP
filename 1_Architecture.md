@@ -1341,7 +1341,8 @@ const symbol = await db
 ---
 
 **See:** [1_REFERENCE_INDEX.md](./1_REFERENCE_INDEX.md) for master index  
+**See:** [1_PROGRESS.md](./1_PROGRESS.md) for journey log  
 **See:** [docs/SETUP.md](./docs/SETUP.md) for environment setup  
 **See:** [1_SETUP_CHECKLIST.md](./1_SETUP_CHECKLIST.md) for manual setup steps  
-**See:** [1_PROGRESS.md](./1_PROGRESS.md) for Phase I tasks  
+**See:** [1_PHASES.md](./1_PHASES.md) for Phase I tasks  
 **See:** [CREDENTIALS.md](./CREDENTIALS.md) for all API keys and secrets

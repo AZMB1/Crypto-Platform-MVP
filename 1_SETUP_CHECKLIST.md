@@ -93,12 +93,13 @@ Infrastructure ready:
 - [x] All credentials stored in CREDENTIALS.md (gitignored)
 - [x] Environment variables configured everywhere
 
-**Next Step:** Start Phase I Step 1 from 1_PROGRESS.md
+**Next Step:** Start Phase I Step 1 from 1_PHASES.md
 
 ---
 
 **See:** 
 - CREDENTIALS.md - All keys and URLs (gitignored, secure)
 - docs/SETUP.md - Detailed setup instructions
-- 1_PROGRESS.md - Phase I tasks
+- 1_PHASES.md - Phase I tasks
+- 1_PROGRESS.md - Journey log (what we've done)
 
