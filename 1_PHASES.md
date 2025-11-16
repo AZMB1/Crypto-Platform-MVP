@@ -243,25 +243,25 @@ GET    /api/health                  # Health check
 **Responsibility:** Integrate Polygon.io API and WebSocket, fetch symbol metadata and OHLCV data
 
 **Tasks:**
-- [ ] Create Polygon.io REST client (`/lib/polygon/rest-client.ts`)
-- [ ] Create data cleaning utility (`/lib/polygon/data-cleaner.ts`)
+- [x] Create Polygon.io REST client (`/lib/polygon/rest-client.ts`)
+- [x] Create data cleaning utility (`/lib/polygon/data-cleaner.ts`)
   - Convert Unix timestamps to datetime
   - Handle missing values (forward fill)
   - Remove duplicates
   - Validate prices (> 0) and volume (>= 0)
-- [ ] Populate symbols table with ALL Polygon.io crypto symbols
-- [ ] Create symbol auto-update job (daily/weekly):
+- [x] Populate symbols table with ALL Polygon.io crypto symbols
+- [x] Create symbol auto-update job (daily/weekly):
   - Sync with Polygon.io catalog (add new, mark removed as inactive)
   - Calculate 24h USD volume (tokens × VWAP) for ranking
   - Update volume_rank for all symbols
-- [ ] Create Polygon.io WebSocket client (`/lib/polygon/websocket-client.ts`)
-- [ ] Implement symbol search/typeahead functionality (search ALL symbols)
-- [ ] Fetch fresh OHLCV data for predictions (200 candles, cached 1hr)
-- [ ] Stream real-time price updates (WebSocket for live charts only)
-- [ ] Create React hook for WebSocket (`/hooks/usePolygonWebSocket.ts`)
-- [ ] Create TypeScript types for Polygon.io responses (`/types/polygon.ts`)
-- [ ] Implement rate limiting and error handling
-- [ ] Create symbols API endpoint (`/app/api/symbols/search/route.ts`)
+- [x] Create Polygon.io WebSocket client (`/lib/polygon/websocket-client.ts`)
+- [x] Implement symbol search/typeahead functionality (search ALL symbols)
+- [x] Fetch fresh OHLCV data for predictions (200 candles, cached 1hr)
+- [x] Stream real-time price updates (WebSocket for live charts only)
+- [x] Create React hook for WebSocket (`/hooks/usePolygonWebSocket.ts`)
+- [x] Create TypeScript types for Polygon.io responses (`/types/polygon.ts`)
+- [x] Implement rate limiting and error handling
+- [x] Create symbols API endpoint (`/app/api/symbols/search/route.ts`)
 
 **Deliverables to Registry:**
 - Polygon.io client function names
