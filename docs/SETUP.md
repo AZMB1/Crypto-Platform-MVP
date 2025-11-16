@@ -35,9 +35,9 @@
 
 **Configuration:**
 - Get API key: https://polygon.io/dashboard/api-keys
-- Used in: `/src/lib/polygon-client.ts`, `/ml/data-fetchers/polygon.py`
+- Used in: `/lib/polygon-client.ts`, `/ml/data-fetchers/polygon.py`
 
-**Status:** 🔴 Pending setup
+**Status:** 🟢 Configured - UNLIMITED plan active
 
 ---
 
