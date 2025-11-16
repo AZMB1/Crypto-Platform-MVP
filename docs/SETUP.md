@@ -219,7 +219,7 @@ NODE_ENV=development | staging | production
 
 # Next.js Public Variables (exposed to client)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_WS_URL=wss://socket.polygon.io
+NEXT_PUBLIC_WS_URL=wss://socket.massive.com/crypto
 ```
 
 ---
@@ -259,7 +259,7 @@ POLYGON_API_KEY=your_dev_api_key
 # App Config
 NODE_ENV=development
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_WS_URL=wss://socket.polygon.io
+NEXT_PUBLIC_WS_URL=wss://socket.massive.com/crypto
 
 # Disable in dev
 SENTRY_ENABLED=false

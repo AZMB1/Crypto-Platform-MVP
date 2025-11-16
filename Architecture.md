@@ -778,7 +778,7 @@ CRITICAL: Uses FRESH data (max 1hr old), NOT weekly training data!
 1. User opens chart for symbol
    ↓
 2. Frontend establishes WebSocket connection
-   → wss://socket.polygon.io/crypto
+   → wss://socket.massive.com/crypto
    ↓
 3. Authenticate with API key
    ↓

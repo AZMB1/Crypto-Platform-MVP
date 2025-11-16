@@ -744,7 +744,7 @@
 - Purpose: Real-time streaming (trades, quotes, aggregates)
 - Use cases: Live charts, alert scanning, market pulse
 - Supported streams: XT (trades), XQ (quotes), XA (per-minute), XAS (per-second)
-- Connection URL: wss://socket.polygon.io/crypto
+- Connection URL: wss://socket.massive.com/crypto
 - Authentication: Send API key after connection
 - Subscription format
 - Integration code example (React hook)

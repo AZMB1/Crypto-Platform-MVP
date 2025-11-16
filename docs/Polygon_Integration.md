@@ -133,8 +133,10 @@ Real-time streaming of trades, quotes, and per-second/per-minute aggregates.
 
 ### WebSocket Connection
 ```
-wss://socket.polygon.io/crypto
+wss://socket.massive.com/crypto
 ```
+
+**Note:** Polygon.io has rebranded to Massive.com. The WebSocket endpoint has changed from `wss://socket.polygon.io/crypto` to `wss://socket.massive.com/crypto`. See [official documentation](https://massive.com/docs/websocket/quickstart).
 
 ### Authentication
 Send API key immediately after connection:
@@ -157,7 +159,7 @@ export function usePolygonWebSocket(ticker: string) {
   const [price, setPrice] = useState<number | null>(null);
   
   useEffect(() => {
-    ws.current = new WebSocket('wss://socket.polygon.io/crypto');
+    ws.current = new WebSocket('wss://socket.massive.com/crypto');
     
     ws.current.onopen = () => {
       // Authenticate

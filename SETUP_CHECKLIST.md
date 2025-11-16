@@ -20,16 +20,18 @@
 - [x] Add Redis service
 - [x] Copy `DATABASE_URL` from PostgreSQL service
 - [x] Copy `REDIS_URL` from Redis service
-- [ ] Create empty service: `ml-worker`
-- [ ] Add persistent volume to `ml-worker`: `/app` (5-10 GB)
-  - Will contain `/app/data/` (training data ~4 GB)
-  - Will contain `/app/models/` (ML models ~500 MB)
+- [x] Create service: `backend`
+- [x] Add persistent volume to `backend`: `/app` (5-10 GB)
+- [x] Add `DATABASE_URL` reference to `backend` (from PostgreSQL)
+- [x] Add `REDIS_URL` reference to `backend` (from Redis)
+- [x] Add `POLYGON_API_KEY` to shared project variables
 
 ---
 
 ## 🔑 API Keys & Credentials
 
 - [ ] Get Polygon.io API key from dashboard
+- [ ] Update `POLYGON_API_KEY` value in Railway (currently placeholder)
 - [ ] Generate NEXTAUTH_SECRET: `openssl rand -base64 32`
 
 ---
@@ -55,7 +57,7 @@
 - [ ] `NEXTAUTH_SECRET`
 - [ ] `NEXTAUTH_URL` (your production domain)
 - [ ] `NEXT_PUBLIC_APP_URL` (your production domain)
-- [ ] `NEXT_PUBLIC_WS_URL=wss://socket.polygon.io`
+- [ ] `NEXT_PUBLIC_WS_URL=wss://socket.massive.com/crypto`
 
 **Preview:**
 - [ ] Same as production (or use staging values)
