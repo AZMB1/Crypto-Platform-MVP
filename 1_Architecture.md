@@ -115,11 +115,11 @@
 
 **Key Files:**
 ```
-/src/app/                     → App Router pages
-/src/components/              → React components
-/src/lib/polygon-client.ts    → Polygon.io API wrapper
-/src/lib/api-client.ts        → Backend API client
-/src/hooks/                   → Custom React hooks
+/app/                         → App Router pages
+/components/                  → React components
+/lib/polygon-client.ts        → Polygon.io API wrapper
+/lib/api-client.ts            → Backend API client
+/hooks/                       → Custom React hooks
 ```
 
 **Deployment:**
@@ -378,7 +378,7 @@ Cached prediction results. Can be for ANY symbol.
 CREATE TABLE predictions (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   symbol_id         UUID NOT NULL REFERENCES symbols(id) ON DELETE CASCADE,
-  user_id           UUID REFERENCES users(id) ON DELETE SET NULL,
+  user_id           UUID,                                 -- Nullable in Phase I (no auth), FK added in Phase II
   timeframe         VARCHAR(10) NOT NULL CHECK (timeframe IN ('1h', '4h', '1d', '1w', '1m')),
   model_id          UUID NOT NULL REFERENCES models(id),
   prediction_date   TIMESTAMP NOT NULL,
@@ -391,10 +391,14 @@ CREATE TABLE predictions (
 );
 
 CREATE INDEX idx_predictions_symbol_id ON predictions(symbol_id);
+CREATE INDEX idx_predictions_user_id ON predictions(user_id);
 CREATE INDEX idx_predictions_timeframe ON predictions(timeframe);
 CREATE INDEX idx_predictions_model_id ON predictions(model_id);
 CREATE INDEX idx_predictions_created_at ON predictions(created_at);
 ```
+
+**Phase I Note:** user_id is nullable with no foreign key constraint (no users table yet).  
+**Phase II Migration:** Add foreign key constraint: `ALTER TABLE predictions ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;`
 
 ---
 

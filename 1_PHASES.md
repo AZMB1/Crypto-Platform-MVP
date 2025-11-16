@@ -35,39 +35,40 @@ Build a single-page MVP dashboard with live charts and AI-powered price predicti
 
 ### File Structure
 ```
-/src
-  /app                    # Next.js App Router pages
-    /api                  # API routes
-      /predictions        # Prediction endpoints
-      /symbols            # Symbol search/metadata
-      /health             # Health checks
-    page.tsx              # Main dashboard page
-    layout.tsx            # Root layout
-    globals.css           # Global styles
-  
-  /components             # React components
-    /chart                # Chart components
-    /prediction           # Prediction UI
-    /ui                   # Reusable UI components
-    /coin-selector        # Coin search/selector
-  
-  /lib                    # Utilities and clients
-    /polygon              # Polygon.io integration
-    /db                   # Database client
-    /redis                # Redis client
-    /ml                   # ML inference client
-    /indicators           # Indicator calculations
-  
-  /types                  # TypeScript type definitions
-    polygon.ts            # Polygon.io types
-    prediction.ts         # Prediction types
-    chart.ts              # Chart types
-    database.ts           # Database types
-  
-  /hooks                  # Custom React hooks
-    useWebSocket.ts       # WebSocket hook
-    useChart.ts           # Chart hook
-    usePrediction.ts      # Prediction hook
+/app                      # Next.js App Router pages
+  /api                    # API routes
+    /predictions          # Prediction endpoints
+    /symbols              # Symbol search/metadata
+    /health               # Health checks
+  page.tsx                # Main dashboard page
+  layout.tsx              # Root layout
+
+/components               # React components
+  /chart                  # Chart components
+  /prediction             # Prediction UI
+  /ui                     # Reusable UI components
+  /coin-selector          # Coin search/selector
+
+/lib                      # Utilities and clients
+  /polygon                # Polygon.io integration
+  /db                     # Database client
+  /redis                  # Redis client
+  /ml                     # ML inference client
+  /indicators             # Indicator calculations
+
+/types                    # TypeScript type definitions
+  polygon.ts              # Polygon.io types
+  prediction.ts           # Prediction types
+  chart.ts                # Chart types
+  database.ts             # Database types
+
+/hooks                    # Custom React hooks
+  useWebSocket.ts         # WebSocket hook
+  useChart.ts             # Chart hook
+  usePrediction.ts        # Prediction hook
+
+/styles                   # Global styles
+  tailwind.css            # Tailwind CSS
 ```
 
 ### Naming Conventions
@@ -106,8 +107,9 @@ Build a single-page MVP dashboard with live charts and AI-powered price predicti
 --          volume_24h_usd, volume_rank, last_updated, created_at
 
 -- predictions: Cached prediction results (grows over time)
--- Columns: id, symbol_id, user_id, timeframe, model_id, prediction_date,
---          predict_until, num_steps, confidence_avg, direction, key_indicators
+-- Columns: id, symbol_id, user_id (nullable, no FK in Phase I), timeframe, model_id, 
+--          prediction_date, predict_until, num_steps, confidence_avg, direction, key_indicators
+-- NOTE: user_id has no foreign key constraint until Phase II (users table doesn't exist yet)
 
 -- prediction_steps: Individual forecast candles (30 per prediction)
 -- Columns: id, prediction_id, step_number, timestamp, open, high, low, close,
@@ -129,15 +131,15 @@ Models can predict ANY symbol (learns universal patterns)
 **Status:** 🔴 Pending
 
 ```typescript
-// Polygon.io types - File: /src/types/polygon.ts
+// Polygon.io types - File: /types/polygon.ts
 // export interface PolygonSymbol { ticker: string; name: string; ... }
 // export interface PolygonCandle { t: number; o: number; h: number; l: number; c: number; v: number; }
 
-// Chart types - File: /src/types/chart.ts
+// Chart types - File: /types/chart.ts
 // export type Timeframe = '1h' | '4h' | '1d' | '1w' | '1m';
 // export interface ChartData { ... }
 
-// Prediction types - File: /src/types/prediction.ts
+// Prediction types - File: /types/prediction.ts
 // export interface PredictionRequest { ... }
 // export interface PredictionResponse { ... }
 // export interface PredictionStep { ... }
@@ -162,7 +164,7 @@ GET    /api/health                  # Health check
 **Status:** 🔴 Pending
 
 ```typescript
-// File: /src/lib/constants.ts
+// File: /lib/constants.ts
 // export const TIMEFRAMES = ['1h', '4h', '1d', '1w', '1m'] as const;
 // export const MAX_PREDICTION_STEPS = 30;
 // export const AVAILABLE_INDICATORS = ['RSI', 'MACD', 'BB', ...];
@@ -197,32 +199,35 @@ GET    /api/health                  # Health check
 **Tasks:**
 - [ ] Create PostgreSQL schema migrations for Phase I tables:
   - `symbols` (ALL Polygon.io symbols with volume_24h_usd and volume_rank)
-  - `predictions` (cached predictions for ANY symbol)
+  - `predictions` (cached predictions for ANY symbol, user_id nullable)
   - `prediction_steps` (forecast steps)
   - `models` (5 rows total - ONE model per timeframe, NOT per symbol)
-- [ ] Set up Railway persistent volumes for file storage:
-  - `/data/` directory for training data (Parquet files)
-  - `/models/` directory for trained model files
-- [ ] Set up database connection with Drizzle ORM (`/src/lib/db.ts`)
+  - NOTE: user_id in predictions has NO foreign key constraint (users table added in Phase II)
+- [x] Railway persistent volume configured:
+  - Volume mount: `/app` (10 GB, already set up)
+  - Will create subdirectories: `/app/data/` (training) and `/app/models/` (ML models)
+- [ ] Set up database connection with Drizzle ORM (`/lib/db/index.ts`)
   - Install: `drizzle-orm`, `drizzle-kit`, `pg`
   - Define schema in code (auto-generates types)
   - Type-safe queries with SQL-like syntax
-- [ ] Set up Redis connection client (`/src/lib/redis.ts`)
+- [ ] Set up Redis connection client (`/lib/redis/index.ts`)
   - Install: `ioredis`
 - [ ] Create database access functions (CRUD operations)
 - [ ] Implement caching strategies:
   - Fresh OHLCV cache (1hr TTL)
   - Prediction cache (15min TTL)
   - Symbol metadata cache (24hr TTL)
-- [ ] Create health check endpoint (`/src/app/api/health/route.ts`)
+- [x] Health check endpoint (already exists in boilerplate)
+  - Path: `/app/api/health/route.ts`
+  - Returns 200 OK status
 
 **Deliverables to Registry:**
 - Database table names (4 tables, NO OHLCV table)
 - Column names and types
 - Connection client export names
-- Cache key patterns (see Redis section in Database_Schema.md)
+- Cache key patterns (see 1_Architecture.md lines 238-263 Redis Cache section)
 - TypeScript database types
-- File storage directory structure
+- File storage directory structure (/app/data and /app/models)
 
 **Key Decision:** 
 - ❌ NO historical OHLCV table in PostgreSQL
@@ -238,8 +243,8 @@ GET    /api/health                  # Health check
 **Responsibility:** Integrate Polygon.io API and WebSocket, fetch symbol metadata and OHLCV data
 
 **Tasks:**
-- [ ] Create Polygon.io REST client (`/src/lib/polygon/rest-client.ts`)
-- [ ] Create data cleaning utility (`/src/lib/polygon/data-cleaner.ts`)
+- [ ] Create Polygon.io REST client (`/lib/polygon/rest-client.ts`)
+- [ ] Create data cleaning utility (`/lib/polygon/data-cleaner.ts`)
   - Convert Unix timestamps to datetime
   - Handle missing values (forward fill)
   - Remove duplicates
@@ -249,14 +254,14 @@ GET    /api/health                  # Health check
   - Sync with Polygon.io catalog (add new, mark removed as inactive)
   - Calculate 24h USD volume (tokens × VWAP) for ranking
   - Update volume_rank for all symbols
-- [ ] Create Polygon.io WebSocket client (`/src/lib/polygon/websocket-client.ts`)
+- [ ] Create Polygon.io WebSocket client (`/lib/polygon/websocket-client.ts`)
 - [ ] Implement symbol search/typeahead functionality (search ALL symbols)
 - [ ] Fetch fresh OHLCV data for predictions (200 candles, cached 1hr)
 - [ ] Stream real-time price updates (WebSocket for live charts only)
-- [ ] Create React hook for WebSocket (`/src/hooks/usePolygonWebSocket.ts`)
-- [ ] Create TypeScript types for Polygon.io responses (`/src/types/polygon.ts`)
+- [ ] Create React hook for WebSocket (`/hooks/usePolygonWebSocket.ts`)
+- [ ] Create TypeScript types for Polygon.io responses (`/types/polygon.ts`)
 - [ ] Implement rate limiting and error handling
-- [ ] Create symbols API endpoint (`/src/app/api/symbols/search/route.ts`)
+- [ ] Create symbols API endpoint (`/app/api/symbols/search/route.ts`)
 
 **Deliverables to Registry:**
 - Polygon.io client function names
@@ -282,16 +287,16 @@ GET    /api/health                  # Health check
 
 **Tasks:**
 - [ ] Install and configure TradingView lightweight-charts
-- [ ] Create base chart component (`/src/components/chart/ChartCanvas.tsx`)
+- [ ] Create base chart component (`/components/chart/ChartCanvas.tsx`)
 - [ ] Implement candlestick rendering
 - [ ] Add timeframe switching (1h, 4h, 1d, 1w, 1m)
 - [ ] Implement pan/zoom functionality
 - [ ] Add drawing tools (trendlines, shapes)
 - [ ] Add indicator overlays (MA, RSI, MACD, Bollinger Bands)
 - [ ] Connect to real-time WebSocket updates
-- [ ] Create chart controls component (`/src/components/chart/ChartControls.tsx`)
-- [ ] Create custom React hook (`/src/hooks/useChart.ts`)
-- [ ] Create TypeScript types (`/src/types/chart.ts`)
+- [ ] Create chart controls component (`/components/chart/ChartControls.tsx`)
+- [ ] Create custom React hook (`/hooks/useChart.ts`)
+- [ ] Create TypeScript types (`/types/chart.ts`)
 
 **Deliverables to Registry:**
 - Chart component export names
@@ -309,26 +314,26 @@ GET    /api/health                  # Health check
 **Responsibility:** Build prediction generation system (indicators + ML inference)
 
 **Tasks:**
-- [ ] Create indicator calculation library (`/src/lib/indicators/`)
+- [ ] Create indicator calculation library (`/lib/indicators/`)
   - Use pandas-ta + ta-lib libraries (Python)
   - Remove duplicates between libraries
   - Core indicators for MVP: RSI, MACD, Bollinger, ATR, Stochastic, SMA, EMA, VWAP, CCI, ROC, OBV, Keltner
   - Expand to 150+ post-MVP
-- [ ] Create prediction API endpoint (`/src/app/api/predictions/generate/route.ts`)
+- [ ] Create prediction API endpoint (`/app/api/predictions/generate/route.ts`)
 - [ ] Implement prediction request handler:
   - Check Redis cache for fresh OHLCV (key: `fresh_candles:{ticker}:{timeframe}`)
   - If NOT cached: Fetch FRESH 200 candles from Polygon.io REST API
   - Clean data (timestamps, missing values, validation)
   - Cache in Redis (1 hour TTL)
   - Calculate indicators on-the-fly (same code as training)
-  - Load trained model from file storage (e.g., `/models/1d_v1.0.pkl`)
+  - Load trained model from file storage (e.g., `/app/models/1d_v1.0.pkl`)
   - Generate 30-step forecast with confidence scores
   - Return forecast with indicator drivers
 - [ ] Create prediction result formatter
 - [ ] Cache predictions in Redis (15min TTL)
 - [ ] Save predictions to PostgreSQL
-- [ ] Create TypeScript types (`/src/types/prediction.ts`)
-- [ ] Create prediction hook (`/src/hooks/usePrediction.ts`)
+- [ ] Create TypeScript types (`/types/prediction.ts`)
+- [ ] Create prediction hook (`/hooks/usePrediction.ts`)
 
 **ML Training Setup:**
 - [ ] Set up Railway Python worker for ML training
@@ -373,16 +378,16 @@ GET    /api/health                  # Health check
 
 **Tasks:**
 - [ ] Set up Tailwind CSS configuration (design system tokens)
-- [ ] Create reusable UI components (`/src/components/ui/`):
-  - Button, Input, Select, DatePicker, Table, Card, etc.
-- [ ] Create coin selector component (`/src/components/coin-selector/CoinSelector.tsx`)
-- [ ] Create prediction console component (`/src/components/prediction/PredictionConsole.tsx`)
+- [ ] Create reusable UI components (`/components/ui/`):
+  - Button (already exists in boilerplate), Input, Select, DatePicker, Table, Card, etc.
+- [ ] Create coin selector component (`/components/coin-selector/CoinSelector.tsx`)
+- [ ] Create prediction console component (`/components/prediction/PredictionConsole.tsx`)
   - Date picker ("Predict Until")
   - Timeframe selector (1h, 4h, 1d, 1w, 1m)
   - Generate button
-- [ ] Create prediction results table (`/src/components/prediction/PredictionTable.tsx`)
-- [ ] Create indicator explanations component (`/src/components/prediction/IndicatorDrivers.tsx`)
-- [ ] Assemble main dashboard page (`/src/app/page.tsx`)
+- [ ] Create prediction results table (`/components/prediction/PredictionTable.tsx`)
+- [ ] Create indicator explanations component (`/components/prediction/IndicatorDrivers.tsx`)
+- [ ] Assemble main dashboard page (`/app/page.tsx`)
 - [ ] Implement responsive layout
 - [ ] Add loading states and error handling
 - [ ] Apply typography-forward design system
