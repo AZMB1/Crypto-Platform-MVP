@@ -53,7 +53,6 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 - **[1_REFERENCE_INDEX.md](./1_REFERENCE_INDEX.md)** ⭐ **START HERE** - Master index of all documentation
 - **[1_PROGRESS.md](./1_PROGRESS.md)** 📓 **JOURNEY LOG** - Narrative of what we've done, learnings, blockers
 - **[1_PHASES.md](./1_PHASES.md)** - Task tracking with shared registry (Phase I: 6 steps, 85 tasks)
-- **[1_SETUP_CHECKLIST.md](./1_SETUP_CHECKLIST.md)** - Pre-build manual setup steps (all complete ✅)
 - **[1_AGENT.md](./1_AGENT.md)** - AI agent context and core principles
 - **[1_Architecture.md](./1_Architecture.md)** - Complete system architecture, database schemas, workflows
 - **[1_Design_Philosophy.md](./1_Design_Philosophy.md)** - Typography-forward UI/UX guidelines
