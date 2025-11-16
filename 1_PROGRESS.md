@@ -210,5 +210,102 @@ This document is a **narrative log** of everything we've done, what worked, what
 
 ---
 
-**Next entry will be when we start Phase I Step 1...**
+## 🗓️ November 16, 2025 - Phase I Step 1: Database & Backend Infrastructure
+
+### **What We Accomplished**
+
+**Database Schema (Drizzle ORM):**
+- ✅ Created complete database schema with 4 tables:
+  - `symbols` - All Polygon.io crypto symbols with volume ranking
+  - `models` - ML model metadata (5 rows, one per timeframe)
+  - `predictions` - Cached prediction results
+  - `prediction_steps` - Individual forecast candles
+- ✅ All indexes and foreign key constraints configured
+- ✅ Generated SQL migrations (drizzle/0000_shallow_luckman.sql)
+
+**Database Client (PostgreSQL):**
+- ✅ Installed dependencies: drizzle-orm, drizzle-kit, pg, @types/pg
+- ✅ Created database connection pool (`lib/db/index.ts`)
+- ✅ Implemented CRUD query functions (`lib/db/queries.ts`):
+  - Symbol operations: getSymbolByTicker, searchSymbols, upsertSymbol
+  - Model operations: getActiveModelByTimeframe, getAllActiveModels
+  - Prediction operations: createPrediction, getPredictionById
+  - Utility: getDatabaseStats
+- ✅ All queries are type-safe with Drizzle ORM
+
+**Redis Client:**
+- ✅ Installed ioredis
+- ✅ Created Redis connection client (`lib/redis/index.ts`)
+- ✅ Implemented caching helper functions (`lib/redis/cache-helpers.ts`):
+  - Cache key generators for all patterns
+  - Domain-specific functions: cacheFreshCandles, cachePrediction, cacheSymbol
+  - Invalidation functions for cache management
+  - All TTLs configured per architecture (1hr, 15min, 24hr)
+
+**TypeScript Types:**
+- ✅ Created database types (`types/database.ts`):
+  - Auto-inferred from Drizzle schema
+  - Insert/Select/Update types for all tables
+  - PredictionWithSteps composite type
+- ✅ Created shared constants (`types/shared.ts`):
+  - Timeframe type and array
+  - Cache TTL constants
+  - Prediction and training configuration
+
+**File Storage Documentation:**
+- ✅ Documented complete file structure (`lib/storage/README.md`):
+  - 500 coin folders × 5 timeframes = 2,500 Parquet files
+  - Model storage: 5 .pkl files (one per timeframe)
+  - Weekly update process explained
+  - Code examples for reading data
+
+**Configuration:**
+- ✅ Created drizzle.config.ts for migrations
+- ✅ Updated env.mjs with DATABASE_URL, REDIS_URL, POLYGON_API_KEY validation
+- ✅ Added database scripts to package.json:
+  - db:generate, db:migrate, db:push, db:studio
+
+**Health Check Enhancement:**
+- ✅ Updated /api/health endpoint to test both database and Redis
+- ✅ Returns 503 if any service is down
+- ✅ Includes timestamp and connection status
+
+**Testing Scripts:**
+- ✅ Created test-db.ts script to verify connections
+- ✅ Installed tsx for running TypeScript directly
+
+### **What We Learned**
+
+1. **Railway internal URLs** (`postgres.railway.internal`) only work from within Railway services, not local machines
+2. **Drizzle ORM** provides excellent type safety - all queries are auto-typed
+3. **Migration management** - Drizzle Kit generates clean SQL migrations
+4. **Connection pooling** - Configured with sensible defaults (max 20 connections, 30s idle timeout)
+5. **Redis event handlers** - Added logging for connect/error/reconnect events
+
+### **Blockers Encountered**
+
+- **Database migration push from local**: Railway internal URLs not accessible locally
+  - **Solution**: Migrations will be applied on first deploy to Vercel/Railway
+  - Alternative: Could set up public PostgreSQL URL, but not necessary for now
+
+### **Current Status: Step 1 Complete (Local) ✅**
+
+**What's Ready:**
+- ✅ Database schema defined and migrations generated
+- ✅ Database client and queries implemented
+- ✅ Redis client and caching strategies implemented
+- ✅ TypeScript types for all entities
+- ✅ File storage structure documented
+- ✅ Health check endpoint enhanced
+
+**What Needs Deployment:**
+- 🚀 Push migrations to Railway PostgreSQL (will happen on deploy)
+- 🚀 Test database connections in production environment
+- 🚀 Verify health check endpoint works with real connections
+
+**Ready for:** Phase I Step 2 - Polygon.io Integration & Data Layer
+
+---
+
+**Next entry will be when we start Phase I Step 2...**
 
