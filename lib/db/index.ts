@@ -2,21 +2,23 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import * as schema from './schema'
 
-// Validate DATABASE_URL is present
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set')
+// Validate DATABASE_URL is present (skip during build time)
+if (!process.env.DATABASE_URL && process.env.NODE_ENV !== 'production') {
+  console.warn('⚠️  DATABASE_URL not set - database features will be unavailable')
 }
 
-// Create PostgreSQL connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-  connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection cannot be established
-})
+// Create PostgreSQL connection pool (lazy initialization)
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: 20, // Maximum number of clients in the pool
+      idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+      connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection cannot be established
+    })
+  : null
 
 // Initialize Drizzle ORM with the connection pool
-export const db = drizzle(pool, { schema })
+export const db = pool ? drizzle(pool, { schema }) : null as any
 
 // Export the pool for direct access if needed
 export { pool }

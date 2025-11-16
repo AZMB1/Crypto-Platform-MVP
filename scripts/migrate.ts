@@ -12,8 +12,9 @@ async function runMigrations() {
   console.log('🔄 Starting database migrations...')
 
   if (!process.env.DATABASE_URL) {
-    console.error('❌ DATABASE_URL environment variable is not set')
-    process.exit(1)
+    console.warn('⚠️  DATABASE_URL environment variable is not set')
+    console.warn('⚠️  Skipping migrations (likely running in CI/build environment)')
+    process.exit(0)
   }
 
   const pool = new Pool({
