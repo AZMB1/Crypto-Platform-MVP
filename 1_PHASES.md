@@ -197,7 +197,7 @@ GET    /api/health                  # Health check
 **Responsibility:** Set up database, Redis, file storage, migrations, and data access layer
 
 **Tasks:**
-- [ ] Create PostgreSQL schema migrations for Phase I tables:
+- [x] Create PostgreSQL schema migrations for Phase I tables:
   - `symbols` (ALL Polygon.io symbols with volume_24h_usd and volume_rank)
   - `predictions` (cached predictions for ANY symbol, user_id nullable)
   - `prediction_steps` (forecast steps)
@@ -206,20 +206,20 @@ GET    /api/health                  # Health check
 - [x] Railway persistent volume configured:
   - Volume mount: `/app` (10 GB, already set up)
   - Will create subdirectories: `/app/data/` (training) and `/app/models/` (ML models)
-- [ ] Set up database connection with Drizzle ORM (`/lib/db/index.ts`)
+- [x] Set up database connection with Drizzle ORM (`/lib/db/index.ts`)
   - Install: `drizzle-orm`, `drizzle-kit`, `pg`
   - Define schema in code (auto-generates types)
   - Type-safe queries with SQL-like syntax
-- [ ] Set up Redis connection client (`/lib/redis/index.ts`)
+- [x] Set up Redis connection client (`/lib/redis/index.ts`)
   - Install: `ioredis`
-- [ ] Create database access functions (CRUD operations)
-- [ ] Implement caching strategies:
+- [x] Create database access functions (CRUD operations)
+- [x] Implement caching strategies:
   - Fresh OHLCV cache (1hr TTL)
   - Prediction cache (15min TTL)
   - Symbol metadata cache (24hr TTL)
-- [x] Health check endpoint (already exists in boilerplate)
+- [x] Health check endpoint (enhanced with DB/Redis checks)
   - Path: `/app/api/health/route.ts`
-  - Returns 200 OK status
+  - Returns 200 OK or 503 with connection status
 
 **Deliverables to Registry:**
 - Database table names (4 tables, NO OHLCV table)
