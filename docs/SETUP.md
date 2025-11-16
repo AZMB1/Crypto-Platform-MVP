@@ -154,7 +154,7 @@ REDIS_URL=redis://host:port
 ```
 
 **Where Used:**
-- Backend API: `/src/lib/db.ts`, `/src/lib/redis.ts`
+- Backend API: `/lib/db/index.ts`, `/lib/redis/index.ts`
 - ML Workers: `/ml/config.py`
 
 ---
@@ -174,7 +174,7 @@ GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
 ```
 
 **Where Used:**
-- Frontend: `/src/app/api/auth/[...nextauth]/route.ts`
+- Frontend: `/app/api/auth/[...nextauth]/route.ts`
 - Backend: Session validation middleware
 
 ---
@@ -190,8 +190,8 @@ COINGECKO_API_KEY=your_coingecko_api_key
 ```
 
 **Where Used:**
-- Frontend: `/src/lib/polygon-client.ts` (WebSocket)
-- Backend: `/src/lib/polygon-server.ts` (REST)
+- Frontend: `/lib/polygon/websocket-client.ts` (WebSocket)
+- Backend: `/lib/polygon/rest-client.ts` (REST)
 - ML Workers: `/ml/data-fetchers/polygon.py`
 
 **Security:**
@@ -548,7 +548,6 @@ Before deploying:
 1. Complete setup checklist above
 2. Configure environment variables in all environments
 3. Test local development server
-4. Review Architecture.md for system design
-5. Review Database_Schema.md for database structure
-6. Start Phase I development from PROGRESS.md
+4. Review 1_Architecture.md for system design and database schemas
+5. Start Phase I development from 1_PHASES.md
 

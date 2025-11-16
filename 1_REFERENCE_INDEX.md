@@ -70,9 +70,9 @@
 - Key: ONE model per timeframe trained on ALL top 500 coins, can predict ANY symbol
 
 **File Structure Expectations**
-- /src/app, /src/components, /src/lib, /src/types, /src/hooks
+- /app, /components, /lib, /types, /hooks (no /src directory)
 - /ml (Python ML code)
-- Documentation in root
+- Documentation files prefixed with 1_ at root
 
 **Command Reference**
 - Development: npm run dev, npm run build

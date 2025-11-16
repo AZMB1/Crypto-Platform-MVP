@@ -84,7 +84,7 @@ GET /v3/reference/tickers?market=crypto&active=true&limit=1000
 
 ### Integration Strategy
 ```typescript
-// /src/lib/polygon-client.ts
+// /lib/polygon/rest-client.ts
 import axios from 'axios';
 import { redis } from './redis';
 
@@ -151,7 +151,7 @@ Send API key immediately after connection:
 
 ### Integration Strategy
 ```typescript
-// /src/hooks/usePolygonWebSocket.ts
+// /hooks/usePolygonWebSocket.ts
 import { useEffect, useRef, useState } from 'react';
 
 export function usePolygonWebSocket(ticker: string) {

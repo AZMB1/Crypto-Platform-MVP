@@ -141,9 +141,9 @@ Multi-phase cryptocurrency price prediction platform providing AI-powered foreca
 ```
 /
 ├── AGENT.md                              # This file
-├── PROGRESS.md                           # Phase-based task tracking
-├── APIs_and_Services_Required.md         # External service inventory
-├── Database_Schema.md                    # PostgreSQL schema reference
+├── 1_PHASES.md                           # Phase-based task tracking
+├── 1_PROGRESS.md                         # Journey log (narrative of work done)
+├── 1_Architecture.md                     # System architecture + database schemas
 ├── Architecture.md                       # System architecture overview
 ├── Design_Philosophy.md                  # UI/UX design principles
 ├── Environment_Variables.md              # Env vars reference
@@ -186,13 +186,14 @@ railway run npm run migrate    # Run migrations
 - **Never skip root cause fixes** - Temporary solutions create technical debt
 - **Document all external dependencies** - Track API keys, rate limits, pricing in APIs_and_Services_Required.md
 - **Maintain design consistency** - Reference Design_Philosophy.md for UI decisions
-- **Follow TaskMaster sequence** - Complete tasks in dependency order per PROGRESS.md
+- **Follow sequential steps** - Complete tasks in dependency order per 1_PHASES.md
 
 ---
 
 **Reference Documents:**
-- Full project specification: `gist of project`
-- Task tracking: `PROGRESS.md`
-- Schema details: `Database_Schema.md`
-- System design: `Architecture.md`
+- Master index: `1_REFERENCE_INDEX.md` (start here!)
+- Journey log: `1_PROGRESS.md` (what we've done)
+- Task tracking: `1_PHASES.md` (6 steps, 85 tasks)
+- System design & schemas: `1_Architecture.md`
+- Design guidelines: `1_Design_Philosophy.md`
 

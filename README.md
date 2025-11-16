@@ -201,12 +201,6 @@ See [docs/SETUP.md](./docs/SETUP.md) for complete setup guide.
 │   ├── lib/                 # Utility libraries
 │   ├── hooks/               # Custom React hooks
 │   └── types/               # TypeScript types
-├── docs/                    # Detailed documentation
-├── AGENT.md                 # AI agent context
-├── PROGRESS.md              # Task tracking
-├── Architecture.md          # System architecture
-├── Database_Schema.md       # Database schema
-└── Design_Philosophy.md     # UI/UX guidelines
 ```
 
 ---
@@ -242,6 +236,6 @@ For questions or issues, refer to the comprehensive documentation in the root di
 **Current Status:** Phase I setup in progress
 
 **Next Steps:**
-1. Complete manual setup steps (see [docs/SETUP.md](./docs/SETUP.md))
-2. Configure environment variables
-3. Start Phase I development (see [PROGRESS.md](./PROGRESS.md))
+1. Start Phase I Step 1 from [1_PHASES.md](./1_PHASES.md)
+2. Refer to [1_PROGRESS.md](./1_PROGRESS.md) for journey log
+3. Use [1_REFERENCE_INDEX.md](./1_REFERENCE_INDEX.md) to find relevant docs
