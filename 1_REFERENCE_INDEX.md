@@ -496,6 +496,40 @@
 
 ---
 
+### 1_PROGRESS.md (215 lines)
+**Purpose:** Journey log - Narrative of what we've done, learnings, blockers, decisions
+
+**November 14-15, 2025 - Pre-Build Planning & Infrastructure**
+- Day 1: Complete architecture planning
+  - Created comprehensive documentation
+  - Made critical architecture decisions (5 models, no OHLCV in DB, USD volume ranking)
+  - Consolidated docs from 13 to 7 files
+  
+- Day 2: Infrastructure setup
+  - Installed Next.js enterprise boilerplate
+  - Configured Railway (PostgreSQL + Redis + backend with volume)
+  - Deployed to Vercel
+  - Obtained Polygon.io UNLIMITED API plan
+  - All credentials stored securely
+
+**Current Status**
+- Pre-build setup complete
+- Ready for Phase I Step 1
+
+**Next Session Checklist**
+- Read this document first for context
+- Check 1_PHASES.md for current tasks
+- Use 1_REFERENCE_INDEX.md to find relevant docs
+
+**Key Learnings**
+- One model per timeframe saves massive complexity
+- Documentation consolidation eliminated redundancy
+- Real infrastructure from day 1 (no mocks)
+
+**When to read:** ALWAYS at start of new session for full context
+
+---
+
 ### Design_Philosophy.md (380 lines)
 **Purpose:** Complete UI/UX design system
 
@@ -505,41 +539,7 @@
 
 ---
 
-### SETUP_CHECKLIST.md (80 lines)
-**Purpose:** Minimal pre-build manual setup checklist (checkboxes only)
-
-**Account Creation**
-- Railway account
-- Vercel account  
-- Polygon.io Developer plan
-
-**Railway Project Setup**
-- Create project, add PostgreSQL, add Redis
-- Create persistent volumes (/data, /models)
-- Copy connection strings
-
-**API Keys & Credentials**
-- Get Polygon.io API key
-- Generate NEXTAUTH_SECRET
-
-**Vercel Setup**
-- Connect to GitHub
-- Link to Railway
-
-**Environment Variables**
-- Set in Railway dashboard
-- Set in Vercel dashboard (production, preview, development)
-
-**Verification**
-- Test all services are running
-- Test API connections
-- Verify env vars
-
-**When to read:** Before initializing Next.js project (one-time setup)
-
----
-
-### PROGRESS.md (771 lines)
+### 1_PHASES.md (779 lines)
 **Purpose:** Task tracking, shared registry, work phases (6 steps in Phase I)
 
 **Phase I Mission**
