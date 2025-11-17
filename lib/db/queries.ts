@@ -10,7 +10,7 @@ import type {
 } from '@/types/database'
 import type { Timeframe } from '@/types/shared'
 
-import { db, models, predictionSteps, predictions, symbols } from './index'
+import { db, models, predictions, predictionSteps, symbols } from './index'
 
 /**
  * SYMBOLS QUERIES
