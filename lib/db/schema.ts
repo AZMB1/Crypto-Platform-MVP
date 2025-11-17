@@ -12,8 +12,8 @@ export const symbols = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     ticker: varchar('ticker', { length: 20 }).notNull().unique(),
     name: varchar('name', { length: 255 }).notNull(),
-    baseCurrency: varchar('base_currency', { length: 10 }),
-    quoteCurrency: varchar('quote_currency', { length: 10 }),
+    baseCurrency: varchar('base_currency', { length: 20 }),
+    quoteCurrency: varchar('quote_currency', { length: 20 }),
     isActive: boolean('is_active').default(true),
 
     // Ranking columns (determines top 500 for training)
