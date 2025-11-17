@@ -25,5 +25,6 @@ COPY drizzle.config.ts ./
 COPY env.mjs ./
 
 # Run migrations first, then the symbol sync script
-CMD ["sh", "-c", "pnpm run db:migrate && pnpm exec tsx scripts/sync-symbols.ts"]
+# Debug: List drizzle folder contents before running
+CMD ["sh", "-c", "ls -la drizzle/ && ls -la drizzle/meta/ && pnpm run db:migrate && pnpm exec tsx scripts/sync-symbols.ts"]
 
