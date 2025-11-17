@@ -131,7 +131,7 @@ async function syncSymbols() {
 
     await db.execute(sql`
       UPDATE ${symbols}
-      SET ${symbols.volumeRank} = subquery.rank
+      SET volume_rank = subquery.rank
       FROM (
         SELECT ${symbols.id}, 
                ROW_NUMBER() OVER (ORDER BY CAST(${symbols.volume24hUsd} AS NUMERIC) DESC NULLS LAST) as rank
