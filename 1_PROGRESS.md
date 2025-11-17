@@ -410,14 +410,18 @@ This document is a **narrative log** of everything we've done, what worked, what
 - 1,710 lines of code added
 - All tests passing (no compilation errors)
 
-**Next Steps:**
-1. Run `tsx scripts/sync-symbols.ts` to populate symbols table (requires Railway connection)
-2. Test API endpoints:
-   - `/api/symbols/search?q=BTC`
-   - `/api/candles/X:BTCUSD/1h?limit=100`
-3. Deploy to Vercel and verify in production
+**Setup Required (User Action):**
+1. ✅ Set up Railway Cron Job for symbol sync (see `RAILWAY_SETUP_INSTRUCTIONS.md`)
+   - Schedule: Weekly (every Sunday at 3 AM)
+   - Command: `pnpm install && pnpm exec tsx scripts/sync-symbols.ts`
+   - Trigger manually once to populate database initially
+2. ✅ Test API endpoints after symbols are populated (see `API_TESTING_INSTRUCTIONS.md`)
+   - `/api/health` - Verify database/Redis connections
+   - `/api/symbols/search?q=BTC` - Test symbol search
+   - `/api/candles/X:BTCUSD/1h?limit=100` - Test candle data
+3. ✅ Verify Vercel deployment (auto-deploys on git push)
 
-**Ready for:** Phase I Step 3 - Chart Implementation
+**Ready for:** Phase I Step 3 - Chart Implementation (after validation above)
 
 ---
 
