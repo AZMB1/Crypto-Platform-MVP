@@ -5,7 +5,7 @@ import Redis from 'ioredis'
  * Singleton instance for connection pooling
  * Only connects at runtime, not during build
  */
-let redis: Redis | null = null
+let redisInstance: Redis | null = null
 
 function getRedisClient(): Redis {
   // Skip Redis connection during build
@@ -17,8 +17,8 @@ function getRedisClient(): Redis {
     throw new Error('REDIS_URL environment variable is not set')
   }
 
-  if (!redis) {
-    redis = new Redis(process.env.REDIS_URL, {
+  if (!redisInstance) {
+    redisInstance = new Redis(process.env.REDIS_URL, {
       maxRetriesPerRequest: 3,
       enableReadyCheck: true,
       enableOfflineQueue: true,
@@ -38,28 +38,28 @@ function getRedisClient(): Redis {
     })
 
     // Redis event handlers
-    redis.on('connect', () => {
+    redisInstance.on('connect', () => {
       console.log('✅ Redis: Connected')
     })
 
-    redis.on('ready', () => {
+    redisInstance.on('ready', () => {
       console.log('✅ Redis: Ready to accept commands')
     })
 
-    redis.on('error', (err) => {
+    redisInstance.on('error', (err) => {
       console.error('❌ Redis: Error -', err.message)
     })
 
-    redis.on('close', () => {
+    redisInstance.on('close', () => {
       console.log('⚠️ Redis: Connection closed')
     })
 
-    redis.on('reconnecting', () => {
+    redisInstance.on('reconnecting', () => {
       console.log('🔄 Redis: Reconnecting...')
     })
   }
 
-  return redis
+  return redisInstance
 }
 
 /**
@@ -89,7 +89,7 @@ export async function testRedisConnection(): Promise<boolean> {
  * Should be called when shutting down the application
  */
 export async function closeRedisConnection(): Promise<void> {
-  if (redis) {
+  if (redisInstance) {
     await getRedisClient().quit()
   }
 }

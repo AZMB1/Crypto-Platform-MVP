@@ -7,7 +7,7 @@ import * as schema from './schema'
  * Database connection pool and Drizzle instance
  * Only connects at runtime, not during build
  */
-let pool: Pool | null = null
+let poolInstance: Pool | null = null
 let dbInstance: NodePgDatabase<typeof schema> | null = null
 
 function getPool(): Pool {
@@ -20,8 +20,8 @@ function getPool(): Pool {
     throw new Error('DATABASE_URL environment variable is not set')
   }
 
-  if (!pool) {
-    pool = new Pool({
+  if (!poolInstance) {
+    poolInstance = new Pool({
       connectionString: process.env.DATABASE_URL,
       max: 20, // Maximum number of clients in the pool
       idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
@@ -29,7 +29,7 @@ function getPool(): Pool {
     })
   }
 
-  return pool
+  return poolInstance
 }
 
 function getDb(): NodePgDatabase<typeof schema> {
@@ -77,7 +77,7 @@ export async function testConnection(): Promise<boolean> {
  * Should be called when shutting down the application
  */
 export async function closeConnections(): Promise<void> {
-  if (pool) {
+  if (poolInstance) {
     await getPool().end()
   }
 }
