@@ -8,7 +8,7 @@
  * - Proper sorting
  */
 
-import type { PolygonAggregate, CleanedCandle } from '@/types/polygon'
+import type { CleanedCandle, PolygonAggregate } from '@/types/polygon'
 
 /**
  * Clean OHLCV data from Polygon.io aggregates

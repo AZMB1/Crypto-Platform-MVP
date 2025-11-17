@@ -6,10 +6,10 @@
  * Results are cached in Redis with 1-hour TTL
  */
 
-import type { Timeframe } from '@/types/shared'
 import type { CleanedCandle } from '@/types/polygon'
-import { getAggregates, calculateDateRange } from './rest-client'
+import type { Timeframe } from '@/types/shared'
 import { cacheFreshCandles, getCachedFreshCandles } from '../redis/cache-helpers'
+import { calculateDateRange, getAggregates } from './rest-client'
 
 /**
  * Get fresh candles for predictions

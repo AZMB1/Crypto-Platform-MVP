@@ -6,13 +6,13 @@
  */
 
 import type {
-  PolygonSymbol,
-  PolygonAggregatesResponse,
-  PolygonTickersResponse,
-  PolygonDailyBar,
-  PolygonLastTrade,
-  PolygonError,
   CleanedCandle,
+  PolygonAggregatesResponse,
+  PolygonDailyBar,
+  PolygonError,
+  PolygonLastTrade,
+  PolygonSymbol,
+  PolygonTickersResponse,
 } from '@/types/polygon'
 import type { Timeframe } from '@/types/shared'
 import { cleanOHLCVData } from './data-cleaner'

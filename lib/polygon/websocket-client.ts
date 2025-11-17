@@ -13,10 +13,10 @@
 
 import { EventEmitter } from 'events'
 import type {
-  PolygonWebSocketMessage,
-  PolygonCryptoTrade,
-  PolygonCryptoQuote,
   PolygonCryptoAggregate,
+  PolygonCryptoQuote,
+  PolygonCryptoTrade,
+  PolygonWebSocketMessage,
   WebSocketState,
 } from '@/types/polygon'
 
