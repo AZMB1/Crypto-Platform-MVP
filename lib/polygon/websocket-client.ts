@@ -17,8 +17,8 @@ import type {
   PolygonCryptoQuote,
   PolygonCryptoTrade,
   PolygonWebSocketMessage,
-  WebSocketState,
 } from '@/types/polygon'
+import { WebSocketState } from '@/types/polygon'
 
 const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 const WEBSOCKET_URL = 'wss://socket.massive.com/crypto'
@@ -27,7 +27,7 @@ const HEARTBEAT_INTERVAL_MS = 30000
 
 export class PolygonWebSocketClient extends EventEmitter {
   private ws: WebSocket | null = null
-  private state: WebSocketState = 'disconnected' as WebSocketState
+  private state: WebSocketState = WebSocketState.DISCONNECTED
   private subscriptions: Set<string> = new Set()
   private reconnectTimer: NodeJS.Timeout | null = null
   private heartbeatTimer: NodeJS.Timeout | null = null
@@ -41,7 +41,7 @@ export class PolygonWebSocketClient extends EventEmitter {
    * Connect to Polygon.io WebSocket
    */
   public connect(): void {
-    if (this.state === 'connected' || this.state === 'connecting') {
+    if (this.state === WebSocketState.CONNECTED || this.state === WebSocketState.CONNECTING) {
       console.log('WebSocket already connected or connecting')
       return
     }
@@ -52,7 +52,7 @@ export class PolygonWebSocketClient extends EventEmitter {
       return
     }
 
-    this.setState('connecting')
+    this.setState(WebSocketState.CONNECTING)
     console.log(`🔌 Connecting to ${WEBSOCKET_URL}...`)
 
     try {
@@ -89,7 +89,7 @@ export class PolygonWebSocketClient extends EventEmitter {
       this.ws = null
     }
 
-    this.setState('disconnected')
+    this.setState(WebSocketState.DISCONNECTED)
   }
 
   /**
@@ -142,7 +142,7 @@ export class PolygonWebSocketClient extends EventEmitter {
    */
   private handleOpen(): void {
     console.log('✅ WebSocket connected')
-    this.setState('connected')
+    this.setState(WebSocketState.CONNECTED)
 
     // Authenticate
     this.send({ action: 'auth', params: POLYGON_API_KEY! })
@@ -158,7 +158,7 @@ export class PolygonWebSocketClient extends EventEmitter {
    */
   private handleMessage(event: MessageEvent): void {
     try {
-      const messages: PolygonWebSocketMessage[] = JSON.parse(event.data)
+      const messages = JSON.parse(event.data) as PolygonWebSocketMessage[]
 
       if (!Array.isArray(messages)) {
         console.warn('Received non-array message:', event.data)
@@ -188,7 +188,7 @@ export class PolygonWebSocketClient extends EventEmitter {
     console.log(`📊 Status: ${message.status} - ${message.message}`)
 
     if (message.status === 'auth_success') {
-      this.setState('authenticated')
+      this.setState(WebSocketState.AUTHENTICATED)
       this.emit('authenticated')
 
       // Resubscribe to previous subscriptions
@@ -201,7 +201,7 @@ export class PolygonWebSocketClient extends EventEmitter {
       this.flushMessageBuffer()
     } else if (message.status === 'auth_failed') {
       console.error('❌ Authentication failed')
-      this.setState('error')
+      this.setState(WebSocketState.ERROR)
       this.emit('error', new Error('Authentication failed'))
     }
   }
@@ -211,7 +211,7 @@ export class PolygonWebSocketClient extends EventEmitter {
    */
   private handleError(event: Event): void {
     console.error('❌ WebSocket error:', event)
-    this.setState('error')
+    this.setState(WebSocketState.ERROR)
     this.emit('error', event)
   }
 
@@ -226,7 +226,7 @@ export class PolygonWebSocketClient extends EventEmitter {
       this.heartbeatTimer = null
     }
 
-    this.setState('disconnected')
+    this.setState(WebSocketState.DISCONNECTED)
     this.emit('disconnected', event)
 
     // Attempt to reconnect if not a clean close
@@ -244,7 +244,7 @@ export class PolygonWebSocketClient extends EventEmitter {
     }
 
     console.log(`🔄 Reconnecting in ${RECONNECT_DELAY_MS}ms...`)
-    this.setState('reconnecting')
+    this.setState(WebSocketState.RECONNECTING)
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null
@@ -257,7 +257,7 @@ export class PolygonWebSocketClient extends EventEmitter {
    * Buffers messages if not authenticated yet
    */
   private send(message: { action: string; params: string }): void {
-    if (!this.ws || this.state !== 'authenticated') {
+    if (!this.ws || this.state !== WebSocketState.AUTHENTICATED) {
       // Buffer the message until authenticated
       this.messageBuffer.push(JSON.stringify(message))
       return
@@ -281,7 +281,7 @@ export class PolygonWebSocketClient extends EventEmitter {
     console.log(`📤 Sending ${this.messageBuffer.length} buffered messages...`)
 
     this.messageBuffer.forEach((message) => {
-      if (this.ws && this.state === 'authenticated') {
+      if (this.ws && this.state === WebSocketState.AUTHENTICATED) {
         this.ws.send(message)
       }
     })
@@ -294,7 +294,7 @@ export class PolygonWebSocketClient extends EventEmitter {
    */
   private startHeartbeat(): void {
     this.heartbeatTimer = setInterval(() => {
-      if (this.ws && this.state === 'authenticated') {
+      if (this.ws && this.state === WebSocketState.AUTHENTICATED) {
         // Polygon.io doesn't require explicit ping, but we log for monitoring
         console.log('💓 Heartbeat')
       }

@@ -48,10 +48,10 @@ async function fetchWithRetry<T>(
       const response = await fetch(url)
 
       if (!response.ok) {
-        const error: PolygonError = await response.json().catch(() => ({
+        const error = await response.json().catch(() => ({
           status: 'error',
           message: `HTTP ${response.status}: ${response.statusText}`,
-        }))
+        })) as PolygonError
 
         // Don't retry on 4xx errors (client errors)
         if (response.status >= 400 && response.status < 500) {
@@ -61,7 +61,7 @@ async function fetchWithRetry<T>(
         throw new Error(error.message || 'API request failed')
       }
 
-      return await response.json()
+      return await response.json() as T
     } catch (error) {
       const isLastAttempt = i === retries - 1
       if (isLastAttempt) {
@@ -93,7 +93,7 @@ export async function getAllCryptoSymbols(): Promise<PolygonSymbol[]> {
   let nextUrl: string | undefined = `${POLYGON_BASE_URL}/v3/reference/tickers?market=crypto&active=true&limit=1000&apiKey=${POLYGON_API_KEY}`
 
   while (nextUrl) {
-    const response = await fetchWithRetry<PolygonTickersResponse>(nextUrl)
+    const response: PolygonTickersResponse = await fetchWithRetry<PolygonTickersResponse>(nextUrl)
 
     if (response.results && response.results.length > 0) {
       allSymbols.push(...response.results)
@@ -136,7 +136,7 @@ export async function getAggregates(
   let nextUrl: string | undefined = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/range/${multiplier}/${timespan}/${from}/${to}?adjusted=true&sort=asc&limit=5000&apiKey=${POLYGON_API_KEY}`
 
   while (nextUrl) {
-    const response = await fetchWithRetry<PolygonAggregatesResponse>(nextUrl)
+    const response: PolygonAggregatesResponse = await fetchWithRetry<PolygonAggregatesResponse>(nextUrl)
 
     if (response.results && response.results.length > 0) {
       // Clean the data before adding
@@ -186,7 +186,7 @@ export async function getDailyBar(ticker: string): Promise<CleanedCandle | null>
   const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${POLYGON_API_KEY}`
 
   try {
-    const response = await fetchWithRetry<PolygonDailyBar>(url)
+    const response: PolygonDailyBar = await fetchWithRetry<PolygonDailyBar>(url)
 
     if (response.results && response.results.length > 0) {
       const cleaned = cleanOHLCVData(response.results)
@@ -212,7 +212,7 @@ export function calculateDateRange(
   count: number
 ): { from: string; to: string } {
   const now = new Date()
-  const to = now.toISOString().split('T')[0] // YYYY-MM-DD
+  const to = now.toISOString().split('T')[0]! // YYYY-MM-DD
 
   // Calculate milliseconds per candle
   const msPerCandle: Record<Timeframe, number> = {
@@ -226,7 +226,7 @@ export function calculateDateRange(
   // Add 20% buffer to account for gaps (weekends, low liquidity)
   const totalMs = msPerCandle[timeframe] * count * 1.2
   const fromDate = new Date(now.getTime() - totalMs)
-  const from = fromDate.toISOString().split('T')[0]
+  const from = fromDate.toISOString().split('T')[0]!
 
   return { from, to }
 }
@@ -243,7 +243,7 @@ export async function testPolygonConnection(): Promise<boolean> {
 
   try {
     const url = `${POLYGON_BASE_URL}/v3/reference/tickers?market=crypto&limit=1&apiKey=${POLYGON_API_KEY}`
-    const response = await fetchWithRetry<PolygonTickersResponse>(url, 1, 500)
+    const response: PolygonTickersResponse = await fetchWithRetry<PolygonTickersResponse>(url, 1, 500)
     return response.status === 'OK' || response.status === 'success'
   } catch (error) {
     console.error('Polygon.io connection test failed:', error)

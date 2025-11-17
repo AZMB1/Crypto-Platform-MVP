@@ -3,7 +3,8 @@
  * Run with: tsx scripts/test-db.ts
  */
 
-import { testConnection, closeConnections, getDatabaseStats } from '../lib/db/queries'
+import { testConnection, closeConnections } from '../lib/db'
+import { getDatabaseStats } from '../lib/db/queries'
 import { testRedisConnection, closeRedisConnection } from '../lib/redis'
 
 async function main() {

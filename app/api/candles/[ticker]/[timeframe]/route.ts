@@ -12,16 +12,12 @@ import { getFreshCandles } from '@/lib/polygon/fetch-fresh-candles'
 import type { Timeframe } from '@/types/shared'
 import { SUPPORTED_TIMEFRAMES } from '@/types/shared'
 
-interface RouteParams {
-  params: {
-    ticker: string
-    timeframe: string
-  }
-}
-
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ ticker: string; timeframe: string }> }
+) {
   try {
-    const { ticker, timeframe } = params
+    const { ticker, timeframe } = await params
     const searchParams = request.nextUrl.searchParams
     const limitParam = searchParams.get('limit')
     const limit = limitParam ? parseInt(limitParam, 10) : 200

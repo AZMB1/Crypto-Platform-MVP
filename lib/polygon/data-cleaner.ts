@@ -124,11 +124,11 @@ function validateCandles(candles: CleanedCandle[]): CleanedCandle[] {
 function forwardFillMissingValues(candles: CleanedCandle[]): CleanedCandle[] {
   if (candles.length === 0) return candles
 
-  const filled: CleanedCandle[] = [candles[0]]
+  const filled: CleanedCandle[] = [candles[0]!]
 
   for (let i = 1; i < candles.length; i++) {
-    const current = candles[i]
-    const previous = filled[filled.length - 1]
+    const current = candles[i]!
+    const previous = filled[filled.length - 1]!
 
     // If any OHLC value is missing or invalid, use previous close
     if (!current.open || !current.high || !current.low || !current.close) {
@@ -194,8 +194,8 @@ export function getCandleStats(candles: CleanedCandle[]): {
 
   return {
     count: candles.length,
-    firstTimestamp: candles[0].timestamp,
-    lastTimestamp: candles[candles.length - 1].timestamp,
+    firstTimestamp: candles[0]!.timestamp,
+    lastTimestamp: candles[candles.length - 1]!.timestamp,
     avgVolume: totalVolume / candles.length,
     minPrice: Math.min(...allPrices),
     maxPrice: Math.max(...allPrices),

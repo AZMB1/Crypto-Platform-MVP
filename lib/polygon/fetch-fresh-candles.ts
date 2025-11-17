@@ -110,7 +110,7 @@ export async function getLatestPrice(
 ): Promise<number | null> {
   try {
     const candles = await getFreshCandles(ticker, timeframe, 1)
-    return candles.length > 0 ? candles[0].close : null
+    return candles.length > 0 ? candles[0]!.close : null
   } catch (error) {
     console.error(`Failed to get latest price for ${ticker}:`, error)
     return null
