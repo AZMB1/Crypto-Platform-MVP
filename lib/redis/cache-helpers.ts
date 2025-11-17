@@ -1,6 +1,8 @@
-import { redis } from './index'
-import { CACHE_TTL } from '@/types/shared'
 import type { Timeframe } from '@/types/shared'
+
+import { CACHE_TTL } from '@/types/shared'
+
+import { redis } from './index'
 
 /**
  * Redis Cache Key Patterns
