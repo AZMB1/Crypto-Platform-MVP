@@ -1,5 +1,5 @@
-import { testConnection } from '@/lib/db/index'
-import { testRedisConnection } from '@/lib/redis/index'
+import { testConnection } from '@/lib/db'
+import { testRedisConnection } from '@/lib/redis'
 
 export async function GET() {
   const checks: {
