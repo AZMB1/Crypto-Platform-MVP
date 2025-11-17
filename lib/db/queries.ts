@@ -1,16 +1,16 @@
-import { eq, desc, and, sql, asc } from 'drizzle-orm'
-import { db, symbols, models, predictions, predictionSteps } from './index'
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import type {
-  Symbol,
-  SymbolInsert,
   Model,
   Prediction,
   PredictionInsert,
-  PredictionStep,
   PredictionStepInsert,
   PredictionWithSteps,
+  Symbol,
+  SymbolInsert,
 } from '@/types/database'
 import type { Timeframe } from '@/types/shared'
+
+import { db, models, predictionSteps, predictions, symbols } from './index'
 
 /**
  * SYMBOLS QUERIES

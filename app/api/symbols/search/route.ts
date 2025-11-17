@@ -9,7 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { searchSymbols } from '@/lib/db/queries'
-import { setCache, getCache } from '@/lib/redis/cache-helpers'
+import { getCache, setCache } from '@/lib/redis/cache-helpers'
 
 const CACHE_TTL_SECONDS = 300 // 5 minutes
 

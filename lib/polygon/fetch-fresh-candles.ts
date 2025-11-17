@@ -8,8 +8,9 @@
 
 import type { CleanedCandle } from '@/types/polygon'
 import type { Timeframe } from '@/types/shared'
-import { cacheFreshCandles, getCachedFreshCandles } from '../redis/cache-helpers'
+
 import { calculateDateRange, getAggregates } from './rest-client'
+import { cacheFreshCandles, getCachedFreshCandles } from '../redis/cache-helpers'
 
 /**
  * Get fresh candles for predictions
