@@ -26,8 +26,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "postbuild": "pnpm run db:migrate"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^15.3.1",
