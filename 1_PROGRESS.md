@@ -410,16 +410,27 @@ This document is a **narrative log** of everything we've done, what worked, what
 - 1,710 lines of code added
 - All tests passing (no compilation errors)
 
-**Setup Required (User Action):**
-1. ✅ Set up Railway Cron Job for symbol sync (see `RAILWAY_SETUP_INSTRUCTIONS.md`)
-   - Schedule: Weekly (every Sunday at 3 AM)
-   - Command: `pnpm install && pnpm exec tsx scripts/sync-symbols.ts`
-   - Trigger manually once to populate database initially
-2. ✅ Test API endpoints after symbols are populated (see `API_TESTING_INSTRUCTIONS.md`)
+**Setup Completed:**
+
+**Railway Cron Job with Docker:**
+- ✅ Created `Dockerfile.symbol-sync` for symbol sync cron job
+- ✅ Added `.dockerignore` to optimize build speed
+- ✅ Deployed to Railway as cron service (runs every Sunday at 3 AM UTC)
+- ✅ Environment variables configured (DATABASE_URL, REDIS_URL, POLYGON_API_KEY)
+- ✅ Successfully tested - build completed in 68 seconds
+
+**Key Decision Made:**
+- ✅ **All future cron jobs/scheduled tasks MUST use Dockerfiles** (e.g., `Dockerfile.model-training`, `Dockerfile.data-cleanup`)
+- ✅ This approach avoids build confusion, provides clean separation, and is production-ready
+- ✅ Each Dockerfile should be named descriptively: `Dockerfile.[service-name]`
+
+**Remaining User Actions:**
+1. Trigger symbol sync manually once to populate database (Redeploy in Railway)
+2. After sync completes, test API endpoints:
    - `/api/health` - Verify database/Redis connections
    - `/api/symbols/search?q=BTC` - Test symbol search
    - `/api/candles/X:BTCUSD/1h?limit=100` - Test candle data
-3. ✅ Verify Vercel deployment (auto-deploys on git push)
+3. Verify Vercel deployment is working (auto-deploys on git push)
 
 **Ready for:** Phase I Step 3 - Chart Implementation (after validation above)
 
