@@ -259,6 +259,13 @@ This document is a **narrative log** of everything we've done, what worked, what
   - Weekly update process explained
   - Code examples for reading data
 
+**Railway Persistent Volume:**
+- ✅ Configured Railway service with persistent volume (10 GB)
+  - Mount path: `/app`
+  - Subdirectories: `/app/data/` (training data), `/app/models/` (ML models)
+  - This service holds storage only - no deployments needed until Phase I Step 4
+  - Recommended name: "storage" or "data-storage" (not "backend")
+
 **Configuration:**
 - ✅ Created drizzle.config.ts for migrations
 - ✅ Updated env.mjs with DATABASE_URL, REDIS_URL, POLYGON_API_KEY validation
