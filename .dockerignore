@@ -1,0 +1,71 @@
+# Docker ignore file for cron job builds
+# Excludes unnecessary files to speed up Docker builds
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js build output
+.next/
+out/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Build files
+dist/
+build/
+
+# Environment files (use Railway variables instead)
+.env
+.env.local
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Assets (not needed for cron)
+assets/
+public/
+
+# Frontend code (not needed for cron)
+app/
+components/
+styles/
+e2e/
+
+# Config files not needed
+.storybook/
+playwright.config.ts
+vitest.config.ts
+vitest.setup.ts
+next.config.ts
+postcss.config.js
+prettier.config.js
+eslint.config.mjs
+renovate.json
+git-conventional-commits.yaml
+
+# Other scripts not needed for this cron
+lp-items.tsx
+instrumentation.ts
+report-bundle-size.js
+graph.svg
+

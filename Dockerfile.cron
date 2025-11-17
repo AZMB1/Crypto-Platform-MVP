@@ -1,0 +1,28 @@
+# Dockerfile for Symbol Sync Cron Job
+# This container runs the symbol sync script on a schedule
+
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy package files first (for layer caching)
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod=false
+
+# Copy only the files needed for the cron script
+COPY scripts/ ./scripts/
+COPY lib/ ./lib/
+COPY types/ ./types/
+COPY tsconfig.json ./
+COPY drizzle.config.ts ./
+COPY env.mjs ./
+
+# Run the symbol sync script
+CMD ["pnpm", "exec", "tsx", "scripts/sync-symbols.ts"]
+
