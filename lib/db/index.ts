@@ -1,25 +1,57 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import * as schema from './schema'
 
-// Validate DATABASE_URL is present
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set')
+/**
+ * Database connection pool and Drizzle instance
+ * Only connects at runtime, not during build
+ */
+let pool: Pool | null = null
+let dbInstance: NodePgDatabase<typeof schema> | null = null
+
+function getPool(): Pool {
+  // Skip database connection during build
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    throw new Error('Database not available during build')
+  }
+
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL environment variable is not set')
+  }
+
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: 20, // Maximum number of clients in the pool
+      idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+      connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection cannot be established
+    })
+  }
+
+  return pool
 }
 
-// Create PostgreSQL connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-  connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection cannot be established
+function getDb(): NodePgDatabase<typeof schema> {
+  if (!dbInstance) {
+    dbInstance = drizzle(getPool(), { schema })
+  }
+  return dbInstance
+}
+
+// Export db as a Proxy to lazy-load the connection
+export const db = new Proxy({} as NodePgDatabase<typeof schema>, {
+  get(_target, prop) {
+    return getDb()[prop as keyof NodePgDatabase<typeof schema>]
+  },
 })
 
-// Initialize Drizzle ORM with the connection pool
-export const db = drizzle(pool, { schema })
-
-// Export the pool for direct access if needed
-export { pool }
+// Export the pool getter for direct access if needed
+export const pool = new Proxy({} as Pool, {
+  get(_target, prop) {
+    return getPool()[prop as keyof Pool]
+  },
+})
 
 // Export all schema tables for type-safe queries
 export { symbols, models, predictions, predictionSteps } from './schema'
@@ -30,7 +62,7 @@ export { symbols, models, predictions, predictionSteps } from './schema'
  */
 export async function testConnection(): Promise<boolean> {
   try {
-    const client = await pool.connect()
+    const client = await getPool().connect()
     await client.query('SELECT NOW()')
     client.release()
     return true
@@ -45,6 +77,8 @@ export async function testConnection(): Promise<boolean> {
  * Should be called when shutting down the application
  */
 export async function closeConnections(): Promise<void> {
-  await pool.end()
+  if (pool) {
+    await getPool().end()
+  }
 }
 
