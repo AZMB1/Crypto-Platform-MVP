@@ -5,7 +5,8 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // Prefer DATABASE_PUBLIC_URL (for Vercel), fallback to DATABASE_URL (for Railway)
+    url: (process.env.DATABASE_PUBLIC_URL || process.env.DATABASE_URL)!,
   },
   verbose: true,
   strict: true,

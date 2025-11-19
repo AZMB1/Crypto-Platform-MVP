@@ -13,12 +13,15 @@ function getRedisClient(): Redis {
     throw new Error('Redis not available during build')
   }
 
-  if (!process.env.REDIS_URL) {
-    throw new Error('REDIS_URL environment variable is not set')
+  // Prefer REDIS_PUBLIC_URL (for Vercel), fallback to REDIS_URL (for Railway)
+  const redisUrl = process.env.REDIS_PUBLIC_URL || process.env.REDIS_URL
+
+  if (!redisUrl) {
+    throw new Error('REDIS_URL or REDIS_PUBLIC_URL environment variable must be set')
   }
 
   if (!redisInstance) {
-    redisInstance = new Redis(process.env.REDIS_URL, {
+    redisInstance = new Redis(redisUrl, {
       maxRetriesPerRequest: 3,
       enableReadyCheck: true,
       enableOfflineQueue: true,

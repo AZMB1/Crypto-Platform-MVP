@@ -11,13 +11,16 @@ import { Pool } from 'pg'
 async function runMigrations() {
   console.log('🔄 Starting database migrations...')
 
-  if (!process.env.DATABASE_URL) {
-    console.error('❌ DATABASE_URL environment variable is not set')
+  // Prefer DATABASE_PUBLIC_URL (for Vercel), fallback to DATABASE_URL (for Railway)
+  const databaseUrl = process.env.DATABASE_PUBLIC_URL || process.env.DATABASE_URL
+
+  if (!databaseUrl) {
+    console.error('❌ DATABASE_URL or DATABASE_PUBLIC_URL environment variable is not set')
     process.exit(1)
   }
 
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: databaseUrl,
     max: 1, // Use single connection for migrations
   })
 

@@ -16,13 +16,16 @@ function getPool(): Pool {
     throw new Error('Database not available during build')
   }
 
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL environment variable is not set')
+  // Prefer DATABASE_PUBLIC_URL (for Vercel), fallback to DATABASE_URL (for Railway)
+  const databaseUrl = process.env.DATABASE_PUBLIC_URL || process.env.DATABASE_URL
+
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL or DATABASE_PUBLIC_URL environment variable must be set')
   }
 
   if (!poolInstance) {
     poolInstance = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: databaseUrl,
       max: 20, // Maximum number of clients in the pool
       idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
       connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection cannot be established
