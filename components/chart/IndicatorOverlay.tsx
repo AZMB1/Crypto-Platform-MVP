@@ -7,7 +7,7 @@
  * Handles SMA, EMA (line series), RSI (separate pane), and Volume (histogram).
  */
 
-import type { IChartApi, ISeriesApi } from 'lightweight-charts'
+import type { IChartApi } from 'lightweight-charts'
 import { useEffect, useRef } from 'react'
 
 import {
@@ -36,7 +36,8 @@ export function IndicatorOverlay({
   indicators,
 }: IndicatorOverlayProps) {
   // Track created series for cleanup
-  const seriesRefs = useRef<Map<string, ISeriesApi<'Line' | 'Histogram'>>>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const seriesRefs = useRef<Map<string, any>>(
     new Map()
   )
 

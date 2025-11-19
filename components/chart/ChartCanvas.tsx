@@ -16,7 +16,6 @@ import {
 import type {
   CandlestickSeriesPartialOptions,
   IChartApi,
-  ISeriesApi,
 } from 'lightweight-charts'
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
@@ -45,7 +44,8 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
   function ChartCanvas({ data, ticker, timeframe, onCrosshairMove, height = 500 }, ref) {
     const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
-  const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const candlestickSeriesRef = useRef<any>(null)
     const resizeObserverRef = useRef<ResizeObserver | null>(null)
 
     // Expose chart API to parent via ref
