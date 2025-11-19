@@ -2,7 +2,7 @@
 
 **Project:** AI-Powered Crypto Price Prediction Platform  
 **Started:** November 14, 2025  
-**Last Updated:** November 15, 2025
+**Last Updated:** November 19, 2025
 
 ---
 
@@ -1070,9 +1070,59 @@ Development page with:
 
 ---
 
+### **Final Deployment: Charts Working! (November 19, 2025)**
+
+**THE REAL PROBLEM WAS DISCOVERED:**
+- lightweight-charts **v5 changed the API** completely
+- All documentation and examples we followed were for **v4** (deprecated methods)
+- We were using `chart.addCandlestickSeries()` which **doesn't exist in v5**
+
+**The Correct v5 API:**
+```typescript
+// ❌ OLD v4 API (doesn't work)
+chart.addCandlestickSeries(options)
+chart.addLineSeries(options)
+chart.addHistogramSeries(options)
+
+// ✅ NEW v5 API (correct)
+import { CandlestickSeries, LineSeries, HistogramSeries } from 'lightweight-charts'
+chart.addSeries(CandlestickSeries, options)
+chart.addSeries(LineSeries, options)
+chart.addSeries(HistogramSeries, options)
+```
+
+**What We Changed:**
+1. Imported series classes: `CandlestickSeries`, `LineSeries`, `HistogramSeries`
+2. Replaced all `addXxxSeries()` with `addSeries(SeriesClass, options)`
+3. Removed all `as any` type hacks (proper TypeScript now)
+4. Added time field casting for v5's strict typing
+
+**Files Modified:**
+- `components/chart/ChartCanvas.tsx` - Chart initialization
+- `components/chart/IndicatorOverlay.tsx` - SMA, EMA, RSI, Volume overlays
+
+**Deployment Results:**
+- ✅ Build successful
+- ✅ Charts render on Vercel
+- ✅ Bitcoin, Ethereum, Solana all working
+- ✅ Candlesticks display correctly (green/red)
+- ✅ Indicators can be toggled
+- ✅ Timeframe switching works
+- ✅ No more TypeScript errors
+- ✅ No runtime errors
+
+**Key Lesson Learned:**
+- Always check the **official documentation version** you're using
+- Don't assume library APIs are backward compatible
+- Type errors aren't always the root cause - sometimes it's the API itself that changed
+
+---
+
 ### **Current Status: Phase I Step 3 COMPLETE ✅**
 
 **Deliverable:** Interactive candlestick chart with 4 indicators, real-time updates, and timeframe switching.
+
+**Test URL:** https://crypto-platform-mvp.vercel.app/test-chart
 
 ---
 

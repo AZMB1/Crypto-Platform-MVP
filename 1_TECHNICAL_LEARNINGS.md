@@ -260,9 +260,70 @@ export const redis = new Proxy({} as Redis, {
 
 ## Third-Party Libraries
 
-### ⚠️ lightweight-charts v5.0.9: TypeScript Types Don't Match Runtime API
+### 🚨 CRITICAL: lightweight-charts v5 API Changes
+
+**Encountered:** Phase I Step 3 (Chart Implementation)
+
+**Symptom:** Runtime error: `t.addCandlestickSeries is not a function`
+
+**Root Cause:** lightweight-charts v5 completely changed the API for adding series. The v4 methods (`addCandlestickSeries`, `addLineSeries`, `addHistogramSeries`) **do not exist** in v5.
+
+**THE MISTAKE:** We were following v4 documentation/examples and using deprecated API methods.
+
+**THE SOLUTION - Correct v5 API:**
+
+```typescript
+// ❌ WRONG - v4 API (deprecated, doesn't work in v5)
+import { createChart } from 'lightweight-charts'
+
+const chart = createChart(container)
+const candleSeries = chart.addCandlestickSeries(options) // ERROR!
+const lineSeries = chart.addLineSeries(options) // ERROR!
+const histogramSeries = chart.addHistogramSeries(options) // ERROR!
+```
+
+```typescript
+// ✅ CORRECT - v5 API
+import { 
+  createChart, 
+  CandlestickSeries, 
+  LineSeries, 
+  HistogramSeries 
+} from 'lightweight-charts'
+
+const chart = createChart(container)
+const candleSeries = chart.addSeries(CandlestickSeries, options) // ✅
+const lineSeries = chart.addSeries(LineSeries, options) // ✅
+const histogramSeries = chart.addSeries(HistogramSeries, options) // ✅
+```
+
+**Key Points:**
+1. Import the **series classes** (`CandlestickSeries`, `LineSeries`, `HistogramSeries`)
+2. Use `chart.addSeries(SeriesClass, options)` instead of `chart.addXxxSeries(options)`
+3. The time field must be cast to match v5's strict typing: `time: number as Time`
+4. Do NOT use `as any` hacks - the proper API works with TypeScript
+
+**Files That Need This:**
+- Any component creating charts with `createChart()`
+- Any component adding series (candlestick, line, histogram)
+- In our case: `components/chart/ChartCanvas.tsx` and `components/chart/IndicatorOverlay.tsx`
+
+**Documentation:**
+- Official v5 docs: https://tradingview.github.io/lightweight-charts/docs
+- Migration guide: Check version-specific documentation
+
+**Lesson Learned:**
+- **Always verify the library version** you're using matches the documentation
+- Don't assume APIs are backward compatible between major versions
+- If type assertions (`as any`) are needed everywhere, you're probably using the wrong API
+
+---
+
+### ⚠️ lightweight-charts v5.0.9: TypeScript Types Don't Match Runtime API (OBSOLETE - See v5 API Changes Above)
 
 **Encountered:** Phase I Step 3 (Chart implementation)
+
+**NOTE:** This section is now obsolete. The real issue was using the wrong API (v4 methods in v5). See "lightweight-charts v5 API Changes" above for the correct solution.
 
 **Severity:** Known library issue, not our fault
 
