@@ -26,7 +26,7 @@ export default function TestChartPage() {
           ticker="X:BTCUSD"
           initialTimeframe="1d"
           height={600}
-          enableRealtime={true}
+          enableRealtime={false}
         />
 
         {/* Instructions */}
@@ -105,7 +105,7 @@ export default function TestChartPage() {
               ticker="X:ETHUSD"
               initialTimeframe="4h"
               height={400}
-              enableRealtime={true}
+              enableRealtime={false}
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function TestChartPage() {
               ticker="X:SOLUSD"
               initialTimeframe="1h"
               height={400}
-              enableRealtime={true}
+              enableRealtime={false}
             />
           </div>
         </div>

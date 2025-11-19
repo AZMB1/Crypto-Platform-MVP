@@ -70,6 +70,11 @@ export function useRealtimeStream(
 
   const eventSourceRef = useRef<EventSource | null>(null)
   const isConnectingRef = useRef(false)
+  const retryCountRef = useRef(0)
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const MAX_RETRIES = 3 // Stop after 3 failed attempts
+  const BASE_RETRY_DELAY = 5000 // Start with 5 seconds
 
   /**
    * Connect to SSE endpoint
@@ -91,6 +96,7 @@ export function useRealtimeStream(
         console.log(`[SSE] ✅ Connected to ticker: ${ticker}`)
         setStatus('connected')
         isConnectingRef.current = false
+        retryCountRef.current = 0 // Reset retry count on successful connection
       }
 
       eventSource.onmessage = (event) => {
@@ -140,12 +146,25 @@ export function useRealtimeStream(
           eventSourceRef.current = null
         }
 
-        // Attempt reconnection after 3 seconds
-        setTimeout(() => {
+        // Increment retry count
+        retryCountRef.current += 1
+
+        // Stop retrying after MAX_RETRIES
+        if (retryCountRef.current >= MAX_RETRIES) {
+          console.warn(`[SSE] ⚠️  Max retries (${MAX_RETRIES}) reached for ${ticker}. Stopping reconnection attempts.`)
+          return
+        }
+
+        // Exponential backoff: 5s, 10s, 20s
+        const delay = BASE_RETRY_DELAY * Math.pow(2, retryCountRef.current - 1)
+        console.log(`[SSE] 🔄 Retry ${retryCountRef.current}/${MAX_RETRIES} in ${delay}ms...`)
+
+        // Attempt reconnection with exponential backoff
+        reconnectTimeoutRef.current = setTimeout(() => {
           if (ticker && autoConnect) {
             connect()
           }
-        }, 3000)
+        }, delay)
       }
     } catch (error) {
       console.error('[SSE] Failed to create EventSource:', error)
@@ -160,12 +179,19 @@ export function useRealtimeStream(
   const disconnect = useCallback(() => {
     console.log('[SSE] Disconnecting...')
 
+    // Clear any pending reconnection attempts
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current)
+      reconnectTimeoutRef.current = null
+    }
+
     if (eventSourceRef.current) {
       eventSourceRef.current.close()
       eventSourceRef.current = null
     }
 
     isConnectingRef.current = false
+    retryCountRef.current = 0
     setStatus('disconnected')
   }, [])
 
