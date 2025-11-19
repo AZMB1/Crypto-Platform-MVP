@@ -7,6 +7,7 @@
  * Handles SMA, EMA (line series), RSI (separate pane), and Volume (histogram).
  */
 
+import { HistogramSeries, LineSeries } from 'lightweight-charts'
 import type { IChartApi } from 'lightweight-charts'
 import { useEffect, useRef } from 'react'
 
@@ -36,21 +37,16 @@ export function IndicatorOverlay({
   indicators,
 }: IndicatorOverlayProps) {
   // Track created series for cleanup
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const seriesRefs = useRef<Map<string, any>>(
+  const seriesRefs = useRef<Map<string, ReturnType<IChartApi['addSeries']>>>(
     new Map()
   )
 
   useEffect(() => {
     if (!chartApi || data.length === 0) return
 
-    // Cast chart API to any to bypass type issues with lightweight-charts v5
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const chart = chartApi as any
-
     // Clean up all existing indicator series
     seriesRefs.current.forEach((series) => {
-      chart.removeSeries(series)
+      chartApi.removeSeries(series)
     })
     seriesRefs.current.clear()
 
@@ -65,15 +61,14 @@ export function IndicatorOverlay({
           case 'sma': {
             const smaData = calculateSMA(data, period)
             if (smaData.length > 0) {
-              const smaSeries = chart.addLineSeries({
+              const smaSeries = chartApi.addSeries(LineSeries, {
                 color: indicator.color ?? '#2962FF', // Blue
                 lineWidth: 2,
                 title: `SMA(${period})`,
                 priceLineVisible: false,
                 lastValueVisible: true,
               })
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              smaSeries.setData(smaData as any)
+              smaSeries.setData(smaData.map(d => ({ ...d, time: d.time as Parameters<typeof smaSeries.setData>[0][0]['time'] })))
               seriesRefs.current.set(`sma-${period}`, smaSeries)
             }
             break
@@ -82,15 +77,14 @@ export function IndicatorOverlay({
           case 'ema': {
             const emaData = calculateEMA(data, period)
             if (emaData.length > 0) {
-              const emaSeries = chart.addLineSeries({
+              const emaSeries = chartApi.addSeries(LineSeries, {
                 color: indicator.color ?? '#f59e0b', // Amber
                 lineWidth: 2,
                 title: `EMA(${period})`,
                 priceLineVisible: false,
                 lastValueVisible: true,
               })
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              emaSeries.setData(emaData as any)
+              emaSeries.setData(emaData.map(d => ({ ...d, time: d.time as Parameters<typeof emaSeries.setData>[0][0]['time'] })))
               seriesRefs.current.set(`ema-${period}`, emaSeries)
             }
             break
@@ -99,7 +93,7 @@ export function IndicatorOverlay({
           case 'rsi': {
             const rsiData = calculateRSI(data, period)
             if (rsiData.length > 0) {
-              const rsiSeries = chart.addLineSeries({
+              const rsiSeries = chartApi.addSeries(LineSeries, {
                 color: indicator.color ?? '#8b5cf6', // Purple
                 lineWidth: 2,
                 title: `RSI(${period})`,
@@ -114,8 +108,7 @@ export function IndicatorOverlay({
                   minMove: 0.01,
                 },
               })
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              rsiSeries.setData(rsiData as any)
+              rsiSeries.setData(rsiData.map(d => ({ ...d, time: d.time as Parameters<typeof rsiSeries.setData>[0][0]['time'] })))
               seriesRefs.current.set(`rsi-${period}`, rsiSeries)
             }
             break
@@ -128,7 +121,7 @@ export function IndicatorOverlay({
               '#ef4444' // Red
             )
             if (volumeData.length > 0) {
-              const volumeSeries = chart.addHistogramSeries({
+              const volumeSeries = chartApi.addSeries(HistogramSeries, {
                 color: '#10b981',
                 priceFormat: {
                   type: 'volume',
@@ -138,8 +131,7 @@ export function IndicatorOverlay({
                 priceLineVisible: false,
                 lastValueVisible: false,
               })
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              volumeSeries.setData(volumeData as any)
+              volumeSeries.setData(volumeData.map(d => ({ ...d, time: d.time as Parameters<typeof volumeSeries.setData>[0][0]['time'] })))
               
               // Position volume at bottom with smaller scale
               chartApi.priceScale('volume').applyOptions({

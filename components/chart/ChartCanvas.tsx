@@ -9,6 +9,7 @@
 
 /* eslint-disable sort-imports */
 import {
+  CandlestickSeries,
   ColorType,
   createChart,
   CrosshairMode,
@@ -43,9 +44,8 @@ interface ChartCanvasProps {
 export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
   function ChartCanvas({ data, ticker, timeframe, onCrosshairMove, height = 500 }, ref) {
     const chartContainerRef = useRef<HTMLDivElement>(null)
-  const chartRef = useRef<IChartApi | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const candlestickSeriesRef = useRef<any>(null)
+    const chartRef = useRef<IChartApi | null>(null)
+    const candlestickSeriesRef = useRef<ReturnType<IChartApi['addSeries']> | null>(null)
     const resizeObserverRef = useRef<ResizeObserver | null>(null)
 
     // Expose chart API to parent via ref
@@ -101,14 +101,12 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
         },
       }
 
-      // Create chart (cast to any to bypass lightweight-charts v5 type issues)
+      // Create chart
       const chart = createChart(chartContainerRef.current, {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ...(chartOptions as any),
+        ...chartOptions,
         width: chartContainerRef.current.clientWidth,
         height,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any
+      } as Parameters<typeof createChart>[1])
 
       chartRef.current = chart
 
@@ -122,15 +120,14 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
         wickDownColor: '#ef4444',
       }
 
-      // Add candlestick series
-      // Type assertion required due to lightweight-charts v5 type definitions mismatch
-      const candlestickSeries = chart.addCandlestickSeries(candlestickOptions)
+      // Add candlestick series using v5 API: addSeries(CandlestickSeries, options)
+      const candlestickSeries = chart.addSeries(CandlestickSeries, candlestickOptions)
       candlestickSeriesRef.current = candlestickSeries
 
       // Set initial data
       if (data.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        candlestickSeries.setData(data as any)
+        // Cast time to UTCTimestamp for v5 API compatibility
+        candlestickSeries.setData(data.map(d => ({ ...d, time: d.time as Parameters<typeof candlestickSeries.setData>[0][0]['time'] })))
       }
 
       // Handle crosshair move events
