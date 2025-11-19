@@ -20,7 +20,8 @@ import type {
 } from '@/types/polygon'
 import { WebSocketState } from '@/types/polygon'
 
-const POLYGON_API_KEY = process.env.POLYGON_API_KEY
+// Use public env var for client-side WebSocket connections
+const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.POLYGON_API_KEY
 const WEBSOCKET_URL = 'wss://socket.massive.com/crypto'
 const RECONNECT_DELAY_MS = 3000
 const HEARTBEAT_INTERVAL_MS = 30000
