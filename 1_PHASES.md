@@ -283,26 +283,44 @@ GET    /api/health                  # Health check
 
 ### Step 3: Chart Implementation
 
-**Responsibility:** Implement interactive chart with TradingView lightweight-charts
+**Responsibility:** Implement interactive chart with TradingView lightweight-charts library and basic indicator overlays
 
 **Tasks:**
-- [ ] Install and configure TradingView lightweight-charts
+- [ ] Install and configure TradingView lightweight-charts (Apache 2.0, free)
 - [ ] Create base chart component (`/components/chart/ChartCanvas.tsx`)
 - [ ] Implement candlestick rendering
 - [ ] Add timeframe switching (1h, 4h, 1d, 1w, 1m)
-- [ ] Implement pan/zoom functionality
-- [ ] Add drawing tools (trendlines, shapes)
-- [ ] Add indicator overlays (MA, RSI, MACD, Bollinger Bands)
-- [ ] Connect to real-time WebSocket updates
+- [ ] Implement pan/zoom functionality (built-in to lightweight-charts)
+- [ ] Create frontend indicator calculation library (`/lib/chart/indicators.ts`)
+  - Simple TypeScript formulas (TradingView-style, calculated client-side)
+  - 4 basic indicators: SMA, EMA, RSI, Volume
+  - Each ~15-20 lines of code
+- [ ] Add indicator overlays to chart:
+  - SMA/EMA: Line series overlays
+  - RSI: Separate pane (0-100 scale)
+  - Volume: Histogram below chart
+- [ ] Connect to real-time WebSocket updates (throttled to 1 update/second)
 - [ ] Create chart controls component (`/components/chart/ChartControls.tsx`)
+  - Timeframe selector buttons
+  - Indicator toggle checkboxes
+- [ ] Create indicator overlay component (`/components/chart/IndicatorOverlay.tsx`)
 - [ ] Create custom React hook (`/hooks/useChart.ts`)
+  - Data fetching from `/api/candles` endpoint
+  - WebSocket integration for live updates
 - [ ] Create TypeScript types (`/types/chart.ts`)
+- [ ] Apply typography-forward design (per Design Philosophy)
+
+**Important Notes:**
+- ✅ Indicators calculated client-side (JavaScript in browser, like TradingView)
+- ✅ No backend API calls for indicator calculations
+- ✅ Drawing tools NOT included (moved to Step 6)
+- ✅ Only 4 indicators for MVP (more in Phase IV)
 
 **Deliverables to Registry:**
 - Chart component export names
 - Chart configuration interface
-- Supported timeframes (constant array)
-- Indicator list and types
+- Supported timeframes (constant array: ['1h', '4h', '1d', '1w', '1m'])
+- Frontend indicator list (SMA, EMA, RSI, Volume)
 - Chart data format requirements
 
 **Dependencies:** Step 2 (needs OHLCV data structure and WebSocket hook)
@@ -311,60 +329,77 @@ GET    /api/health                  # Health check
 
 ### Step 4: Prediction Engine & ML Integration
 
-**Responsibility:** Build prediction generation system (indicators + ML inference)
+**Responsibility:** Build complete ML pipeline - from training to serving predictions
 
-**Tasks:**
-- [ ] Create indicator calculation library (`/lib/indicators/`)
-  - Use pandas-ta + ta-lib libraries (Python)
+**Part A: ML Training Pipeline (One-time Setup + Weekly Retraining)**
+
+- [ ] Set up Railway Python worker for ML training
+- [ ] Install Python packages: `xgboost`, `pandas-ta`, `TA-Lib`, `pandas`, `joblib`, `pyarrow`
+- [ ] Create backend indicator calculation library (`/lib/indicators/` - Python)
+  - Use pandas-ta + ta-lib libraries
   - Remove duplicates between libraries
   - Core indicators for MVP: RSI, MACD, Bollinger, ATR, Stochastic, SMA, EMA, VWAP, CCI, ROC, OBV, Keltner
-  - Expand to 150+ post-MVP
+  - Calculate all 150+ indicators for training data
+  - NOTE: These are BACKEND indicators for ML only, NOT for chart display
+- [ ] Download initial training data (full historical - one-time setup):
+  - Fetch from Polygon.io REST API
+  - 1h: 1 year of data (~8,760 candles per coin)
+  - 4h: 3 years of data (~6,570 candles per coin)
+  - 1d: 5 years of data (~1,825 candles per coin)
+  - 1w: 5 years of data (~260 candles per coin)
+  - 1m: 5 years of data (~60 candles per coin)
+  - Top 500 coins × 5 timeframes = 2,500 Parquet files
+  - Store in Railway persistent volume: `/app/data/`
+- [ ] Implement XGBoost training pipeline:
+  - Feature engineering: OHLCV + 150+ indicators + lagged values
+  - Iterative multi-step forecasting (predict 1 step, use output for next step)
+  - Simple time-decay confidence (85% → 60% over 30 steps)
+  - Train 5 models (one per timeframe) on ALL top 500 coins combined
+  - Save trained models to `/app/models/` (e.g., `1d_v1.0.pkl`)
+  - Training time: ~2-4 hours for all 5 models
+- [ ] Implement weekly training job (Sunday 2 AM UTC, after symbol sync)
+  - Download latest week's data
+  - Append to training datasets
+  - Retrain all 5 models with updated data
+  - Replace old models with new versions
+
+**Part B: Prediction API (Runtime Serving)**
+
 - [ ] Create prediction API endpoint (`/app/api/predictions/generate/route.ts`)
 - [ ] Implement prediction request handler:
+  - Accept: ticker, timeframe, predictUntil date
   - Check Redis cache for fresh OHLCV (key: `fresh_candles:{ticker}:{timeframe}`)
   - If NOT cached: Fetch FRESH 200 candles from Polygon.io REST API
   - Clean data (timestamps, missing values, validation)
   - Cache in Redis (1 hour TTL)
-  - Calculate indicators on-the-fly (same code as training)
+  - Calculate indicators on-the-fly using pandas-ta (same code as training)
   - Load trained model from file storage (e.g., `/app/models/1d_v1.0.pkl`)
   - Generate 30-step forecast with confidence scores
-  - Return forecast with indicator drivers
+  - Return forecast with indicator drivers (e.g., "RSI: 67 (overbought)")
 - [ ] Create prediction result formatter
-- [ ] Cache predictions in Redis (15min TTL)
-- [ ] Save predictions to PostgreSQL
+- [ ] Cache predictions in Redis (15min TTL, key: `prediction:{ticker}:{timeframe}:{date}`)
+- [ ] Save predictions to PostgreSQL (`predictions` and `prediction_steps` tables)
 - [ ] Create TypeScript types (`/types/prediction.ts`)
 - [ ] Create prediction hook (`/hooks/usePrediction.ts`)
 
-**ML Training Setup:**
-- [ ] Set up Railway Python worker for ML training
-- [ ] Install Python packages: `xgboost`, `pandas-ta`, `TA-Lib`, `pandas`, `joblib`
-- [ ] Implement XGBoost training pipeline:
-  - Feature engineering (OHLCV + indicators + lagged values)
-  - Iterative multi-step forecasting
-  - Simple time-decay confidence (85% → 60% over 30 steps)
-- [ ] Download initial training data (full historical - one-time setup):
-  - 1h: 1 year of data
-  - 4h: 3 years of data
-  - 1d/1w/1m: 5 years of data
-- [ ] Train initial 5 XGBoost models from scratch (~2-4 hours)
-- [ ] Implement weekly training job (Sunday 2 AM UTC)
-- [ ] Set up model serving endpoint
-
 **CRITICAL Decisions:**
 - ✅ NO MOCK DATA - Real Railway, real Polygon.io, real models from day 1
-- ✅ Fetch FRESH data from Polygon.io API for each prediction
-- ❌ DO NOT use training data from file storage (can be 7 days old)
+- ✅ Fetch FRESH data from Polygon.io API for each prediction (NOT training data)
+- ❌ DO NOT use training data from file storage for predictions (can be 7 days old)
 - ✅ Training data is for model training ONLY
 - ✅ Prediction data must be fresh for accuracy
-- ✅ ONE model per timeframe trained on ALL top 500 coins
+- ✅ ONE model per timeframe trained on ALL top 500 coins (learns universal patterns)
+- ✅ Backend indicators (pandas-ta) used ONLY for ML, NOT for chart display
 
 **Deliverables to Registry:**
-- Indicator function names and signatures (150+ functions)
+- Backend indicator function names and signatures (150+ functions - Python)
 - Prediction request/response format
-- Prediction API endpoint URL
+- Prediction API endpoint URL: `/api/predictions/generate`
 - Fresh data fetching strategy
 - Cache key patterns
 - Forecast data structure
+- Training data file structure (`/app/data/`)
+- Model file structure (`/app/models/`)
 
 **Dependencies:**
 - Step 1 (needs database and Redis clients)
@@ -405,11 +440,48 @@ GET    /api/health                  # Health check
 
 ---
 
-### Step 6: ML Enhancement & Hybrid Ensemble
+### Step 6: Chart Enhancements & ML Improvements
 
-**Responsibility:** Upgrade from XGBoost to hybrid ensemble for better accuracy
+**Responsibility:** Add drawing tools to chart and optionally upgrade ML models
 
-**Tasks:**
+**Part A: Drawing Tools (Priority)**
+
+- [ ] Evaluate drawing tool options and select implementation approach
+
+**Drawing Tool Options:**
+
+**Option 1: lightweight-charts-plugins (Recommended)**
+- Repo: https://github.com/trash-and-fire/lightweight-charts-plugins
+- **What you get:**
+  - Trendlines (diagonal lines with angle display)
+  - Horizontal/Vertical lines
+  - Rectangles/boxes
+  - Text annotations
+- **Pros:** Free, community-maintained, good quality, moderate complexity (~1 day)
+- **Cons:** Limited to basic tools, not as polished as paid TradingView
+
+**Option 2: Custom Implementation**
+- Build our own using lightweight-charts drawing primitives
+- **Pros:** Full control, exactly what we need
+- **Cons:** More development time (~1-2 weeks)
+- **Best for:** If we need very specific features not in plugins
+
+**Option 3: TradingView Charting Library (Paid)**
+- **Cost:** $3,000/month ($36,000/year)
+- **What you get:** Everything (Fibonacci, Gann, pattern recognition, alerts, etc.)
+- **When to consider:** Post-MVP if we need professional-grade tools and have revenue
+
+**Tasks for Option 1 (Recommended):**
+- [ ] Install lightweight-charts-plugins package
+- [ ] Integrate trendline tool
+- [ ] Integrate horizontal/vertical line tools
+- [ ] Add drawing tool selector UI (toolbar)
+- [ ] Implement drawing persistence (save to localStorage)
+- [ ] Add drawing deletion/editing controls
+- [ ] Apply typography-forward styling
+
+**Part B: ML Enhancement (Optional - Can be skipped for MVP)**
+
 - [ ] Implement LSTM model for pattern recognition
   - Install: `tensorflow` or `pytorch`
   - Architecture: 2-layer LSTM with attention mechanism
@@ -437,16 +509,16 @@ GET    /api/health                  # Health check
 - [ ] Update weekly training job to train all 3 model types
 - [ ] Update model serving to use ensemble
 
-**Expected Improvements:**
+**Expected ML Improvements:**
 - Accuracy: +5-10% over XGBoost alone
 - Confidence: More realistic (based on ensemble variance)
 - Long-term forecasts: More accurate (LSTM captures sequences)
 
 **Dependencies:**
-- Step 4 (needs XGBoost baseline working)
-- GPU recommended (but not required - CPU works, just slower)
+- Part A: Step 3 (needs chart component)
+- Part B: Step 4 (needs XGBoost baseline working), GPU recommended
 
-**Estimated Time:** 1-2 weeks after Step 5 complete
+**Estimated Time:** Part A: 1-2 days, Part B: 1-2 weeks
 
 ---
 
@@ -631,6 +703,20 @@ GET    /api/health                  # Health check
 - [ ] Create component library
 - [ ] Document spacing and layout rules
 - [ ] Build icon set
+
+### Chart Enhancements
+- [ ] Add full suite of frontend indicators (20-50 indicators)
+  - Implement as TypeScript scripts (TradingView-style, client-side calculation)
+  - Add: MACD, Stochastic, CCI, Williams %R, ADX, Parabolic SAR, etc.
+  - Organize into categories: Trend, Momentum, Volatility, Volume
+  - Build indicator selection UI (searchable dropdown)
+  - All calculated in browser (no backend calls)
+  - NOTE: Backend indicators (pandas-ta, 150+) remain separate for ML only
+- [ ] Enhance chart customization options
+  - Custom color schemes
+  - Grid line styles
+  - Multiple chart layouts (single, split, quad)
+  - Save/load chart presets
 
 ### Micro-interactions
 - [ ] Add button hover/press states
