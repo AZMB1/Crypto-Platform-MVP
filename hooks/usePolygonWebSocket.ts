@@ -1,6 +1,12 @@
 'use client'
 
 /**
+ * DEPRECATED: Use hooks/useRealtimeStream.ts instead
+ * 
+ * This hook uses client-side WebSocket which exposes the API key to the browser.
+ * The new useRealtimeStream hook uses Server-Sent Events (SSE) with server-side proxy
+ * to keep the API key secure.
+ * 
  * usePolygonWebSocket Hook
  * 
  * React hook for real-time crypto price updates via Polygon.io WebSocket

@@ -11,14 +11,11 @@ export const env = createEnv({
     REDIS_URL: z.string().url().optional(),
     POLYGON_API_KEY: z.string().optional(),
   },
-  client: {
-    NEXT_PUBLIC_POLYGON_API_KEY: z.string().optional(),
-  },
+  client: {},
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
     DATABASE_URL: process.env.DATABASE_URL,
     REDIS_URL: process.env.REDIS_URL,
     POLYGON_API_KEY: process.env.POLYGON_API_KEY,
-    NEXT_PUBLIC_POLYGON_API_KEY: process.env.NEXT_PUBLIC_POLYGON_API_KEY,
   },
 })

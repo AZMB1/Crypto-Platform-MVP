@@ -1,4 +1,9 @@
 /**
+ * DEPRECATED: Use lib/polygon/websocket-server.ts instead
+ * 
+ * This client-side WebSocket implementation exposes the API key to the browser.
+ * The new server-side implementation keeps the API key secure on the server.
+ * 
  * Polygon.io WebSocket Client
  * 
  * Real-time streaming client for crypto market data
@@ -20,8 +25,7 @@ import type {
 } from '@/types/polygon'
 import { WebSocketState } from '@/types/polygon'
 
-// Use public env var for client-side WebSocket connections
-const POLYGON_API_KEY = process.env.NEXT_PUBLIC_POLYGON_API_KEY || process.env.POLYGON_API_KEY
+const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 const WEBSOCKET_URL = 'wss://socket.massive.com/crypto'
 const RECONNECT_DELAY_MS = 3000
 const HEARTBEAT_INTERVAL_MS = 30000

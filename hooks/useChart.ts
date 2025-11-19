@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import type { CandleData, ChartTimeframe } from '@/types/chart'
-import { usePolygonWebSocket } from './usePolygonWebSocket'
+import { useRealtimeStream } from './useRealtimeStream'
 
 interface UseChartOptions {
   limit?: number // Number of candles to fetch (default: 200)
@@ -124,8 +124,8 @@ export function useChart(
     fetchCandles()
   }, [fetchCandles])
 
-  // WebSocket real-time updates (throttled to 1 update/second)
-  const { price, isConnected } = usePolygonWebSocket(
+  // SSE real-time updates (throttled to 1 update/second)
+  const { price, isConnected } = useRealtimeStream(
     enableRealtime ? ticker : undefined,
     {
       autoConnect: enableRealtime,
