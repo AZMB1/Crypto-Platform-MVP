@@ -122,6 +122,7 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
       }
 
       // Add candlestick series
+      // Type assertion required due to lightweight-charts v5 type definitions mismatch
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const candlestickSeries = (chart as any).addCandlestickSeries(candlestickOptions)
       candlestickSeriesRef.current = candlestickSeries
