@@ -44,9 +44,13 @@ export function IndicatorOverlay({
   useEffect(() => {
     if (!chartApi || data.length === 0) return
 
+    // Cast chart API to any to bypass type issues with lightweight-charts v5
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const chart = chartApi as any
+
     // Clean up all existing indicator series
     seriesRefs.current.forEach((series) => {
-      chartApi.removeSeries(series)
+      chart.removeSeries(series)
     })
     seriesRefs.current.clear()
 
@@ -61,8 +65,7 @@ export function IndicatorOverlay({
           case 'sma': {
             const smaData = calculateSMA(data, period)
             if (smaData.length > 0) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const smaSeries = (chartApi as any).addLineSeries({
+              const smaSeries = chart.addLineSeries({
                 color: indicator.color ?? '#2962FF', // Blue
                 lineWidth: 2,
                 title: `SMA(${period})`,
@@ -79,8 +82,7 @@ export function IndicatorOverlay({
           case 'ema': {
             const emaData = calculateEMA(data, period)
             if (emaData.length > 0) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const emaSeries = (chartApi as any).addLineSeries({
+              const emaSeries = chart.addLineSeries({
                 color: indicator.color ?? '#f59e0b', // Amber
                 lineWidth: 2,
                 title: `EMA(${period})`,
@@ -97,8 +99,7 @@ export function IndicatorOverlay({
           case 'rsi': {
             const rsiData = calculateRSI(data, period)
             if (rsiData.length > 0) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const rsiSeries = (chartApi as any).addLineSeries({
+              const rsiSeries = chart.addLineSeries({
                 color: indicator.color ?? '#8b5cf6', // Purple
                 lineWidth: 2,
                 title: `RSI(${period})`,
@@ -127,8 +128,7 @@ export function IndicatorOverlay({
               '#ef4444' // Red
             )
             if (volumeData.length > 0) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const volumeSeries = (chartApi as any).addHistogramSeries({
+              const volumeSeries = chart.addHistogramSeries({
                 color: '#10b981',
                 priceFormat: {
                   type: 'volume',

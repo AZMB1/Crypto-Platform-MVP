@@ -101,13 +101,14 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
         },
       }
 
-      // Create chart
+      // Create chart (cast to any to bypass lightweight-charts v5 type issues)
       const chart = createChart(chartContainerRef.current, {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ...(chartOptions as any),
         width: chartContainerRef.current.clientWidth,
         height,
-      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      }) as any
 
       chartRef.current = chart
 
@@ -123,8 +124,7 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
 
       // Add candlestick series
       // Type assertion required due to lightweight-charts v5 type definitions mismatch
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const candlestickSeries = (chart as any).addCandlestickSeries(candlestickOptions)
+      const candlestickSeries = chart.addCandlestickSeries(candlestickOptions)
       candlestickSeriesRef.current = candlestickSeries
 
       // Set initial data
@@ -135,7 +135,8 @@ export const ChartCanvas = forwardRef<IChartApi, ChartCanvasProps>(
 
       // Handle crosshair move events
       if (onCrosshairMove) {
-        chart.subscribeCrosshairMove((param) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        chart.subscribeCrosshairMove((param: any) => {
           if (param.time && param.seriesData.size > 0) {
             const seriesData = param.seriesData.get(candlestickSeries)
             if (seriesData && 'close' in seriesData) {
