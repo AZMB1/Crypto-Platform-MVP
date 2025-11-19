@@ -83,9 +83,12 @@ export async function GET(
     console.log(`[Candles API] ✅ Fetched ${candles.length} candles`)
 
     // Convert Date objects to ISO strings for JSON serialization
+    // Handle both Date objects and already-serialized strings from cache
     const serializedCandles = candles.map((candle) => ({
       ...candle,
-      timestamp: candle.timestamp.toISOString(),
+      timestamp: candle.timestamp instanceof Date 
+        ? candle.timestamp.toISOString() 
+        : candle.timestamp, // Already a string from cache
     }))
 
     const duration = Date.now() - startTime
