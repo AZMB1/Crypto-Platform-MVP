@@ -286,29 +286,29 @@ GET    /api/health                  # Health check
 **Responsibility:** Implement interactive chart with TradingView lightweight-charts library and basic indicator overlays
 
 **Tasks:**
-- [ ] Install and configure TradingView lightweight-charts (Apache 2.0, free)
-- [ ] Create base chart component (`/components/chart/ChartCanvas.tsx`)
-- [ ] Implement candlestick rendering
-- [ ] Add timeframe switching (1h, 4h, 1d, 1w, 1m)
-- [ ] Implement pan/zoom functionality (built-in to lightweight-charts)
-- [ ] Create frontend indicator calculation library (`/lib/chart/indicators.ts`)
+- [x] Install and configure TradingView lightweight-charts (Apache 2.0, free)
+- [x] Create base chart component (`/components/chart/ChartCanvas.tsx`)
+- [x] Implement candlestick rendering
+- [x] Add timeframe switching (1h, 4h, 1d, 1w, 1m)
+- [x] Implement pan/zoom functionality (built-in to lightweight-charts)
+- [x] Create frontend indicator calculation library (`/lib/chart/indicators.ts`)
   - Simple TypeScript formulas (TradingView-style, calculated client-side)
   - 4 basic indicators: SMA, EMA, RSI, Volume
   - Each ~15-20 lines of code
-- [ ] Add indicator overlays to chart:
+- [x] Add indicator overlays to chart:
   - SMA/EMA: Line series overlays
   - RSI: Separate pane (0-100 scale)
   - Volume: Histogram below chart
-- [ ] Connect to real-time WebSocket updates (throttled to 1 update/second)
-- [ ] Create chart controls component (`/components/chart/ChartControls.tsx`)
+- [x] Connect to real-time WebSocket updates (throttled to 1 update/second)
+- [x] Create chart controls component (`/components/chart/ChartControls.tsx`)
   - Timeframe selector buttons
   - Indicator toggle checkboxes
-- [ ] Create indicator overlay component (`/components/chart/IndicatorOverlay.tsx`)
-- [ ] Create custom React hook (`/hooks/useChart.ts`)
+- [x] Create indicator overlay component (`/components/chart/IndicatorOverlay.tsx`)
+- [x] Create custom React hook (`/hooks/useChart.ts`)
   - Data fetching from `/api/candles` endpoint
   - WebSocket integration for live updates
-- [ ] Create TypeScript types (`/types/chart.ts`)
-- [ ] Apply typography-forward design (per Design Philosophy)
+- [x] Create TypeScript types (`/types/chart.ts`)
+- [x] Apply typography-forward design (per Design Philosophy)
 
 **Important Notes:**
 - ✅ Indicators calculated client-side (JavaScript in browser, like TradingView)

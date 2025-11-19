@@ -1,7 +1,7 @@
 # Master Reference Index
 
 **Purpose:** Complete index of all project documentation. Consult this FIRST before starting any task to identify relevant context.  
-**Last Updated:** November 15, 2025
+**Last Updated:** November 19, 2025
 
 ---
 
@@ -21,6 +21,37 @@
 ---
 
 ## 📚 DOCUMENT INDEX
+
+### 1_TECHNICAL_LEARNINGS.md
+**Purpose:** Technical challenges, workarounds, and gotchas to prevent repeated issues
+
+**Quick Reference**
+- TypeScript & Type Issues (Next.js 15 params, array assertions, generic return types)
+- ESLint & Linting (conflicting rules, import sorting)
+- React & Next.js (forwardRef, lazy loading connections)
+- Third-Party Libraries (lightweight-charts types, hook mismatches)
+- Build & Deployment (Vercel vs Railway URLs, migrations in Docker)
+- Database & ORM (column lengths, SQL syntax)
+
+**✅ Always Do:**
+- `await params` in Next.js 15 route handlers
+- Add `!` assertions after array length checks
+- Lazy-load database connections (use Proxy pattern)
+- Use public Railway URLs in Vercel
+- Run migrations in Railway Docker containers
+- Pad external API column lengths by 50-100%
+
+**⚠️ When Necessary:**
+- Use `as any` for broken library types (with eslint-disable)
+- Use `!` assertions for React refs in forwardRef
+- Disable `sort-imports` for complex import structures
+
+**❌ Never Do:**
+- Initialize database connections at module top-level
+- Use Railway internal URLs outside Railway
+- Rely on Vercel build scripts for Railway infrastructure
+
+---
 
 ### AGENT.md (198 lines)
 **Purpose:** AI agent initialization context, core principles, quick reference
