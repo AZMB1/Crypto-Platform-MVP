@@ -71,10 +71,10 @@ export function useChart(
       const res = await fetch(url)
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({})) as { error?: string }
-        throw new Error(
-          errorData.error || `Failed to fetch chart data: ${res.status}`
-        )
+        const errorData = await res.json().catch(() => ({})) as { error?: string; message?: string; duration?: string }
+        const errorMessage = errorData.message || errorData.error || `Failed to fetch chart data: ${res.status}`
+        const details = errorData.duration ? ` (took ${errorData.duration})` : ''
+        throw new Error(`${errorMessage}${details}`)
       }
 
       const json = await res.json() as { candles?: Array<{
